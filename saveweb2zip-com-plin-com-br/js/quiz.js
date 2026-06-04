@@ -217,6 +217,17 @@
       } else {
         quizState.currentStep++;
         renderQuizInline();
+
+        // AUTOSCROLL a la 4ta etapa (última etapa del quiz)
+        if (quizState.currentStep === QUIZ_CONFIG.steps.length - 1) {
+          setTimeout(() => {
+            const quizContainer = document.getElementById('plin-quiz-inline');
+            if (quizContainer) {
+              quizContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              log('✓ Autoscroll a etapa 4');
+            }
+          }, 300);
+        }
       }
     });
   }
@@ -227,6 +238,12 @@
     if (!container) return;
 
     container.innerHTML = createWarningHTML();
+
+    // AUTOSCROLL a la pantalla ATENCIÓN
+    setTimeout(() => {
+      container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      log('✓ Autoscroll a ATENCIÓN');
+    }, 300);
 
     // Eventos
     const yesBtn = container.querySelector('.plin-btn-warning-yes');
@@ -489,7 +506,7 @@
 
       /* PANTALLA ATENCIÓN */
       .plin-warning-card {
-        padding: 48px 32px;
+        padding: 32px 24px;
       }
 
       .plin-warning-content {
@@ -497,21 +514,21 @@
       }
 
       .plin-warning-title {
-        font-size: 36px;
+        font-size: 28px;
         font-weight: 700;
         color: #dc2626;
-        margin: 0 0 24px 0;
+        margin: 0 0 16px 0;
       }
 
       .plin-warning-text {
-        margin-bottom: 32px;
+        margin-bottom: 20px;
       }
 
       .plin-warning-text p {
-        font-size: 16px;
+        font-size: 14px;
         color: #374151;
-        margin: 0 0 12px 0;
-        line-height: 1.6;
+        margin: 0 0 8px 0;
+        line-height: 1.5;
       }
 
       .plin-warning-text strong {
@@ -521,17 +538,17 @@
 
       .plin-warning-buttons {
         display: flex;
-        gap: 12px;
+        gap: 10px;
         flex-direction: column;
       }
 
       .plin-btn-warning-yes {
-        padding: 14px 24px;
+        padding: 12px 20px;
         background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
         color: white;
         border: none;
-        border-radius: 12px;
-        font-size: 16px;
+        border-radius: 10px;
+        font-size: 14px;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -543,12 +560,12 @@
       }
 
       .plin-btn-warning-no {
-        padding: 14px 24px;
+        padding: 12px 20px;
         background: #f3f4f6;
         color: #6b7280;
         border: none;
-        border-radius: 12px;
-        font-size: 16px;
+        border-radius: 10px;
+        font-size: 14px;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -578,11 +595,14 @@
       .plin-paywall-modal {
         background: white;
         border-radius: 24px;
-        padding: 32px;
-        max-width: 480px;
+        padding: 24px;
+        max-width: 440px;
         width: 100%;
         position: relative;
         box-shadow: 0 20px 60px rgba(236, 72, 153, 0.3);
+        max-height: calc(100vh - 40px);
+        overflow-y: auto;
+        box-sizing: border-box;
       }
 
       .plin-paywall-close {
@@ -611,9 +631,9 @@
       /* PERFIL */
       .plin-paywall-profile {
         display: flex;
-        gap: 20px;
-        margin-bottom: 32px;
-        padding-bottom: 24px;
+        gap: 16px;
+        margin-bottom: 20px;
+        padding-bottom: 16px;
         border-bottom: 1px solid #e5e7eb;
         align-items: flex-start;
       }
@@ -627,8 +647,8 @@
       }
 
       .plin-paywall-avatar-placeholder {
-        width: 80px;
-        height: 80px;
+        width: 64px;
+        height: 64px;
         border-radius: 50%;
         background: #f3f4f6;
         display: flex;
@@ -639,8 +659,8 @@
       }
 
       .plin-paywall-avatar-placeholder svg {
-        width: 40px;
-        height: 40px;
+        width: 32px;
+        height: 32px;
         stroke-width: 1.5;
       }
 
@@ -684,7 +704,7 @@
 
       /* RESULTADOS BLOQUEADOS */
       .plin-paywall-results {
-        margin-bottom: 32px;
+        margin-bottom: 20px;
       }
 
       .plin-paywall-results-title {
@@ -705,9 +725,9 @@
       }
 
       .plin-paywall-result-line {
-        font-size: 14px;
+        font-size: 13px;
         color: #9ca3af;
-        margin-bottom: 12px;
+        margin-bottom: 8px;
         line-height: 1.4;
         user-select: none;
         filter: blur(2px);
@@ -733,13 +753,13 @@
       .plin-paywall-section {
         background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
         border-radius: 16px;
-        padding: 24px;
+        padding: 18px 20px;
         text-align: center;
       }
 
       .plin-paywall-lock-icon {
-        font-size: 32px;
-        margin: 0 0 12px 0;
+        font-size: 26px;
+        margin: 0 0 8px 0;
       }
 
       .plin-paywall-text {
@@ -794,18 +814,122 @@
           font-size: 22px;
         }
 
-        .plin-paywall-modal {
-          padding: 24px;
+        /* PAYWALL MODAL - MÓVIL */
+        .plin-paywall-overlay {
+          padding: 16px;
+          display: flex;
+          align-items: flex-end;
         }
 
+        .plin-paywall-modal {
+          padding: 18px;
+          max-width: 100%;
+          width: 100%;
+          border-radius: 20px 20px 0 0;
+          max-height: 92vh;
+          overflow-y: auto;
+        }
+
+        .plin-paywall-close {
+          top: 12px;
+          right: 12px;
+          width: 36px;
+          height: 36px;
+          font-size: 28px;
+        }
+
+        /* Perfil en móvil */
         .plin-paywall-profile {
           flex-direction: column;
           align-items: center;
           text-align: center;
+          gap: 16px;
+          margin-bottom: 20px;
+          padding-bottom: 20px;
+        }
+
+        .plin-paywall-avatar-placeholder {
+          width: 60px;
+          height: 60px;
+        }
+
+        .plin-paywall-avatar-placeholder svg {
+          width: 30px;
+          height: 30px;
+        }
+
+        .plin-paywall-avatar-text {
+          font-size: 10px;
+        }
+
+        /* Info en móvil */
+        .plin-paywall-profile-info {
+          width: 100%;
+        }
+
+        .plin-paywall-info-row {
+          margin-bottom: 12px;
+        }
+
+        .plin-paywall-label {
+          font-size: 12px;
+          display: block;
+          margin-bottom: 4px;
+        }
+
+        .plin-paywall-value {
+          font-size: 14px;
+          word-break: break-word;
+        }
+
+        /* Paywall section en móvil */
+        .plin-paywall-section {
+          padding: 16px;
+          margin-bottom: 16px;
+          border-radius: 12px;
+        }
+
+        .plin-paywall-lock-icon {
+          font-size: 28px;
+          margin-bottom: 8px;
+        }
+
+        .plin-paywall-text {
+          font-size: 13px;
+          margin-bottom: 12px;
+        }
+
+        /* Botón en móvil */
+        .plin-paywall-btn-unlock {
+          padding: 12px 16px;
+          font-size: 14px;
+          border-radius: 10px;
+        }
+
+        .plin-paywall-footer {
+          font-size: 11px;
+          margin-top: 8px;
         }
 
         .plin-warning-title {
           font-size: 28px;
+        }
+      }
+
+      /* TABLET */
+      @media (max-width: 1024px) and (min-width: 641px) {
+        .plin-paywall-modal {
+          max-width: 420px;
+          padding: 28px;
+        }
+
+        .plin-paywall-profile {
+          gap: 18px;
+        }
+
+        .plin-paywall-avatar-placeholder {
+          width: 75px;
+          height: 75px;
         }
       }
 
