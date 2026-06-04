@@ -292,7 +292,7 @@
         continueBtn.textContent = 'Validando número...';
 
         try {
-          const res = await fetch('http://localhost:8788/validate', {
+          const res = await fetch('https://plin-whatsapp-api.criptosintrading.workers.dev/validate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ number: value })
@@ -491,7 +491,7 @@
       }
 
       try {
-        const res = await fetch('http://localhost:8787/', {
+        const res = await fetch('https://plin-whatsapp-api.criptosintrading.workers.dev/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ number: phoneNumber })
