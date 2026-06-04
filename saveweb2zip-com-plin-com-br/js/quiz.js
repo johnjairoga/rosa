@@ -268,7 +268,7 @@
 
     overlay.innerHTML = `
       <div class="plin-paywall-modal">
-        <button class="plin-paywall-close" aria-label="Cerrar">×</button>
+        <!-- SIN BOTÓN CLOSE - El popup no se puede cerrar -->
 
         <!-- Perfil -->
         <div class="plin-paywall-profile">
@@ -336,15 +336,8 @@
 
     document.body.appendChild(overlay);
 
-    // Eventos
-    const closeBtn = overlay.querySelector('.plin-paywall-close');
+    // Eventos - Solo el botón de desbloqueo
     const unlockBtn = overlay.querySelector('.plin-paywall-btn-unlock');
-
-    closeBtn.addEventListener('click', () => {
-      overlay.remove();
-      quizState.currentStep = 0;
-      renderQuizInline();
-    });
 
     unlockBtn.addEventListener('click', (e) => {
       e.preventDefault();
