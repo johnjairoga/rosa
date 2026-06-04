@@ -15,6 +15,17 @@
   const QUIZ_CONFIG = {
     steps: [
       {
+        id: 'searchType',
+        title: '¿A quién estás buscando?',
+        subtitle: 'Selecciona una opción para continuar',
+        inputType: 'choice',
+        options: [
+          { value: 'hombre', label: '👨 Hombre', icon: '👨' },
+          { value: 'mujer', label: '👩 Mujer', icon: '👩' }
+        ],
+        dataKey: 'searchType'
+      },
+      {
         id: 'userWhatsapp',
         title: '¿A qué número de WhatsApp quieres que te enviemos la información?',
         subtitle: 'Ingresa tu número para recibir los resultados',
@@ -53,6 +64,7 @@
   let quizState = {
     currentStep: 0,
     data: {
+      searchType: '',
       userWhatsapp: '',
       personName: '',
       personWhatsapp: '',
@@ -80,6 +92,40 @@
       .map((_, i) => `<span class="plin-dot ${i <= quizState.currentStep ? 'active' : ''}"></span>`)
       .join('');
 
+    // Si es una pregunta de opción múltiple
+    if (step.inputType === 'choice') {
+      const optionsHTML = step.options.map(option => `
+        <button
+          type="button"
+          class="plin-quiz-option"
+          data-value="${option.value}"
+        >
+          <span class="plin-quiz-option-icon">${option.icon}</span>
+          <span class="plin-quiz-option-label">${option.label}</span>
+        </button>
+      `).join('');
+
+      return `
+        <div class="plin-quiz-inline-container">
+          <div class="plin-quiz-card">
+            <!-- Progress -->
+            <div class="plin-quiz-progress">${progressDots}</div>
+
+            <!-- Contenido -->
+            <div class="plin-quiz-content">
+              <h2 class="plin-quiz-title">${step.title}</h2>
+              <p class="plin-quiz-subtitle">${step.subtitle}</p>
+
+              <div class="plin-quiz-options">
+                ${optionsHTML}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Preguntas de input normal
     return `
       <div class="plin-quiz-inline-container">
         <div class="plin-quiz-card">
@@ -184,6 +230,35 @@
   }
 
   function attachInlineEvents(container) {
+    const step = QUIZ_CONFIG.steps[quizState.currentStep];
+
+    // Si es una pregunta de opción múltiple
+    if (step.inputType === 'choice') {
+      const options = container.querySelectorAll('.plin-quiz-option');
+
+      options.forEach(option => {
+        option.addEventListener('click', () => {
+          // Deseleccionar todos
+          options.forEach(o => o.classList.remove('selected'));
+          // Seleccionar este
+          option.classList.add('selected');
+
+          // Guardar valor y avanzar
+          const value = option.getAttribute('data-value');
+          quizState.data[step.dataKey] = value;
+          log(`Opción seleccionada: ${value}`);
+
+          // Avanzar al siguiente paso
+          setTimeout(() => {
+            quizState.currentStep++;
+            renderQuizInline();
+          }, 300);
+        });
+      });
+      return;
+    }
+
+    // Preguntas de input normal
     const continueBtn = container.querySelector('.plin-quiz-btn-continue');
     const input = container.querySelector('.plin-quiz-input');
 
@@ -582,6 +657,49 @@
         outline: none;
         border-color: #ec4899;
         box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+      }
+
+      /* OPCIONES MÚLTIPLES */
+      .plin-quiz-options {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 20px;
+      }
+
+      .plin-quiz-option {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 20px;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 16px;
+        font-weight: 500;
+        color: #374151;
+      }
+
+      .plin-quiz-option:hover {
+        border-color: #ec4899;
+        background: #fce7f3;
+      }
+
+      .plin-quiz-option.selected {
+        border-color: #ec4899;
+        background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+        color: white;
+      }
+
+      .plin-quiz-option-icon {
+        font-size: 24px;
+      }
+
+      .plin-quiz-option-label {
+        flex: 1;
+        text-align: left;
       }
 
       /* BOTONES */
