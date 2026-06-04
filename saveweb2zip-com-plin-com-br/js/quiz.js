@@ -336,6 +336,38 @@
 
     document.body.appendChild(overlay);
 
+    // Fetch foto de WhatsApp de la API
+    async function fetchAndSetPhoto(phoneNumber) {
+      const avatarContainer = overlay.querySelector('.plin-paywall-avatar-placeholder');
+      if (!avatarContainer) return;
+
+      try {
+        const res = await fetch('/api/whatsapp-photo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ number: phoneNumber })
+        });
+
+        const { photoUrl } = await res.json();
+
+        if (photoUrl) {
+          avatarContainer.innerHTML = `<img src="${photoUrl}"
+            style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid #ec4899;"
+            alt="Foto perfil WhatsApp" />`;
+          log('✓ Foto de WhatsApp cargada');
+        } else {
+          log('ℹ️ No hay foto de perfil pública en WhatsApp');
+        }
+      } catch (error) {
+        log('❌ Error al obtener foto:', error.message);
+      }
+    }
+
+    // Llamar inmediatamente para obtener la foto
+    if (quizState.data.personWhatsapp) {
+      fetchAndSetPhoto(quizState.data.personWhatsapp);
+    }
+
     // Eventos - Solo el botón de desbloqueo
     const unlockBtn = overlay.querySelector('.plin-paywall-btn-unlock');
 

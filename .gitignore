@@ -5,3 +5,8 @@ imagenes/
 skills-lock.json
 *.py
 __pycache__/
+
+# Entorno local
+.env.local
+.vercel/
+node_modules/
