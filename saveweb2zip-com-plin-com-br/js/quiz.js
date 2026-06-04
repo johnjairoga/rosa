@@ -1004,11 +1004,20 @@
         log('✓ div.mt-10.text-center eliminado');
       }
 
-      // ELIMINAR TODOS los div.flex.items-center.gap-4
+      // ELIMINAR solo div.flex.items-center.gap-4 que NO sean de testimonios
       const flexDivs = root.querySelectorAll('div.flex.items-center.gap-4');
       flexDivs.forEach(div => {
-        div.remove();
-        log('✓ div.flex.items-center.gap-4 eliminado');
+        // Verificar que NO sea parte de testimonios (que contiene imágenes de perfil)
+        const parent = div.closest('section');
+        const text = parent ? parent.textContent : '';
+
+        // NO eliminar si está en sección de testimonios
+        if (!text.includes('Sarah M.') && !text.includes('Jessica T.') &&
+            !text.includes('Michelle K.') && !text.includes('Amanda S.') &&
+            !text.includes('Carla R.') && !text.includes('Beatriz L.')) {
+          div.remove();
+          log('✓ div.flex.items-center.gap-4 eliminado');
+        }
       });
 
       // Buscar la sección que contiene "Cómo" o "Como" (la sección de How It Works)
@@ -1022,6 +1031,188 @@
         renderQuizInline();
         log('✓ Quiz inicializado en su posición');
       }
+
+      // Eliminar imágenes específicas
+      setTimeout(() => {
+        const todasLasImagenes = root.querySelectorAll('img');
+        todasLasImagenes.forEach(img => {
+          const src = img.src || '';
+
+          // Eliminar si apunta a lovable-uploads
+          if (src.includes('lovable-uploads')) {
+            img.remove();
+            log('✓ Imagen lovable-uploads eliminada');
+          }
+
+          // Eliminar woman-phone-g1
+          if (src.includes('woman-phone-g1')) {
+            img.remove();
+            log('✓ Imagen woman-phone eliminada');
+          }
+
+          // Eliminar sabrine-exame
+          if (src.includes('sabrine-exame')) {
+            img.remove();
+            log('✓ Imagen sabrine-exame eliminada');
+          }
+
+          // Corregir logo Plin (header y footer)
+          if (img.alt === 'Plin Logo' && (src.includes('Comunidade') || src.includes('Amanda'))) {
+            img.src = '/images/Logo.png';
+            log('✓ Logo Plin corregido');
+          }
+
+          // Corregir avatar Sarah M. (apunta erróneamente a +30.000 mulheres)
+          if (img.alt === 'Sarah M.' && src.includes('30.000')) {
+            img.src = '/images/sarah-m.png';
+            log('✓ Avatar Sarah M. corregido');
+          }
+
+          // Corregir avatar Jessica T. (apunta erróneamente a plinq_pink_black)
+          if (img.alt === 'Jessica T.' && src.includes('plinq_pink_black')) {
+            img.src = '/images/jessica-t.png';
+            log('✓ Avatar Jessica T. corregido');
+          }
+
+          // Corregir avatar Beatriz L. (apunta erróneamente a jessica-t)
+          if (img.alt === 'Beatriz L.' && src.includes('jessica-t')) {
+            img.src = '/images/Amanda S.png';
+            log('✓ Avatar Beatriz L. corregido');
+          }
+
+        });
+
+        // Eliminar párrafo "Feito com / Venditi" del footer
+        root.querySelectorAll('p').forEach(p => {
+          if (p.textContent.includes('Venditi') || p.textContent.includes('30.391.731')) {
+            p.remove();
+            log('✓ Párrafo Venditi eliminado del footer');
+          }
+        });
+
+      }, 500);
+
+      // Eliminar imagen duplicada de "Aos 28 anos" dentro del card
+      setTimeout(() => {
+        // Buscar DIRECTAMENTE todas las imágenes con "Aos 28 anos" en su src
+        const allImages = root.querySelectorAll('img');
+        const aos28Images = [];
+
+        allImages.forEach(img => {
+          const src = img.src || '';
+          // Buscar de varias formas por si está codificado diferente
+          if (src.includes('Aos') || src.includes('Aos%20') || src.includes('anos') || src.includes('%20anos')) {
+            if (src.includes('criou') || src.includes('site') || src.includes('boy')) {
+              aos28Images.push(img);
+            }
+          }
+        });
+
+        log('📍 Encontradas ' + aos28Images.length + ' imágenes de "Aos 28 anos"');
+
+        // Mantener solo la PRIMERA, eliminar el resto
+        aos28Images.forEach((img, index) => {
+          if (index > 0) {
+            img.remove();
+            log('✓ Imagen duplicada #' + (index + 1) + ' eliminada');
+          }
+        });
+
+        if (aos28Images.length > 1) {
+          log('✅ Deduplicación completada - solo 1 imagen restante');
+        }
+      }, 1000);
+
+      // Agregar foto a "Curitibana crea plataforma que"
+      setTimeout(() => {
+        log('🔍 Buscando card Curitibana...');
+
+        // Target specifically <article> elements to avoid matching outer containers
+        const articles = root.querySelectorAll('article');
+        let found = false;
+
+        for (let article of articles) {
+          const text = article.textContent || '';
+
+          if (text.includes('Curitibana') && text.includes('crea plataforma')) {
+            log('📍 Encontrado article Curitibana');
+
+            // Find the image container div (div.relative inside the article)
+            const imgContainer = article.querySelector('div[class*="relative"]') || article.querySelector('div');
+
+            if (imgContainer) {
+              // Remove any remaining placeholder/broken image inside the container
+              const oldImg = imgContainer.querySelector('img');
+              if (oldImg) oldImg.remove();
+
+              // Create the new image matching the style of the other cards
+              const img = document.createElement('img');
+              img.src = '/images/Curitibana cria plataforma que permite mulheres verificarem.png';
+              img.alt = 'Curitibana cria plataforma que permite mulheres verificarem';
+              img.style.width = '100%';
+              img.style.height = '192px';
+              img.style.objectFit = 'cover';
+              img.style.display = 'block';
+              img.style.transition = 'transform 0.3s';
+
+              // Insert before badge overlay so badge stays on top
+              imgContainer.insertBefore(img, imgContainer.firstChild);
+              log('✓ Foto Curitibana insertada correctamente en contenedor de imagen');
+              found = true;
+            } else {
+              log('⚠️ No se encontró contenedor de imagen en el article');
+            }
+            break;
+          }
+        }
+
+        if (!found) {
+          log('❌ No se encontró card Curitibana');
+        }
+      }, 2500);
+
+      // Agregar foto a "Aos 28 anos" (card Exame)
+      setTimeout(() => {
+        log('🔍 Buscando card Aos 28 anos...');
+
+        const articles = root.querySelectorAll('article');
+        let found = false;
+
+        for (let article of articles) {
+          const text = article.textContent || '';
+
+          if (text.includes('28 a') && (text.includes('sitio web') || text.includes('decepci') || text.includes('Exame') || text.includes('criou'))) {
+            log('📍 Encontrado article Aos 28 anos');
+
+            const imgContainer = article.querySelector('div[class*="relative"]') || article.querySelector('div');
+
+            if (imgContainer) {
+              const oldImg = imgContainer.querySelector('img');
+              if (oldImg) oldImg.remove();
+
+              const img = document.createElement('img');
+              img.src = '/images/Aos 28 anos, ela criou um site para alertar mulheres quando o boy.png';
+              img.alt = 'A los 28 años, ella creó un sitio web para alertar a las mujeres';
+              img.style.width = '100%';
+              img.style.height = '192px';
+              img.style.objectFit = 'cover';
+              img.style.display = 'block';
+              img.style.transition = 'transform 0.3s';
+
+              imgContainer.insertBefore(img, imgContainer.firstChild);
+              log('✓ Foto Aos 28 anos insertada correctamente en contenedor de imagen');
+              found = true;
+            } else {
+              log('⚠️ No se encontró contenedor de imagen en el article Aos 28 anos');
+            }
+            break;
+          }
+        }
+
+        if (!found) {
+          log('❌ No se encontró card Aos 28 anos');
+        }
+      }, 2500);
 
       // Redirigir artículos al quiz (SOLO al hacer clic)
       setTimeout(() => {
