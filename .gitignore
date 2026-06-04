@@ -1,0 +1,7 @@
+# Backups y temporales
+saveweb2zip-backup/
+imagenes/
+.agents/
+skills-lock.json
+*.py
+__pycache__/
