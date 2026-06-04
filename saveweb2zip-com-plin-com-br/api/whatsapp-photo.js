@@ -18,31 +18,36 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Llamar a la API de RapidAPI
-    const response = await fetch('https://whatsapp-data1.p.rapidapi.com/bulk_check', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-rapidapi-host': 'whatsapp-data1.p.rapidapi.com',
-        'x-rapidapi-key': process.env.RAPIDAPI_KEY
-      },
-      body: JSON.stringify({ numbers: [number] })
-    });
+    // Limpiar número (remover caracteres especiales si es necesario)
+    const cleanNumber = number.replace(/\D/g, '');
+
+    // Llamar a RapidAPI — endpoint GET /picture/{number}
+    const response = await fetch(
+      `https://whatsapp-data1.p.rapidapi.com/picture/${cleanNumber}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-rapidapi-host': 'whatsapp-data1.p.rapidapi.com',
+          'x-rapidapi-key': process.env.RAPIDAPI_KEY
+        }
+      }
+    );
 
     if (!response.ok) {
-      console.error('RapidAPI response error:', response.status);
-      return res.status(response.status).json({ error: 'Failed to fetch WhatsApp data' });
+      console.error(`RapidAPI error: ${response.status}`);
+      // Si el número no existe o no tiene foto, retornar null sin error
+      if (response.status === 404) {
+        return res.status(200).json({ photoUrl: null });
+      }
+      return res.status(response.status).json({ error: 'Failed to fetch WhatsApp photo' });
     }
 
-    const data = await response.json();
+    // La respuesta directa es la URL de la foto
+    const photoUrl = await response.text();
 
-    // Extraer foto del perfil de la respuesta
-    // La API devuelve un array; tomamos el primer elemento
-    const profile = data?.[0] || {};
-    const photoUrl = profile.photo || profile.profile_photo || null;
-
-    // Retornar la foto o null si no existe
-    res.status(200).json({ photoUrl });
+    // Retornar la URL o null si está vacía
+    res.status(200).json({ photoUrl: photoUrl || null });
   } catch (error) {
     console.error('Error fetching WhatsApp photo:', error);
     res.status(500).json({ error: 'Internal server error' });

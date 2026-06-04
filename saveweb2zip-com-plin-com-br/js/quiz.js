@@ -193,7 +193,7 @@
     });
 
     // Botón continuar
-    continueBtn.addEventListener('click', () => {
+    continueBtn.addEventListener('click', async () => {
       const value = input.value.trim();
       const step = QUIZ_CONFIG.steps[quizState.currentStep];
 
@@ -211,7 +211,52 @@
       quizState.data[step.dataKey] = value;
       log(`Paso ${quizState.currentStep + 1} completado`, { [step.dataKey]: value });
 
-      // Siguiente paso o pantalla ATENCIÓN
+      // VALIDACIÓN ESPECIAL: Paso 3 (índice 2) - personWhatsapp - validar si tiene WhatsApp
+      if (quizState.currentStep === 2) {
+        continueBtn.disabled = true;
+        continueBtn.textContent = 'Validando número...';
+
+        try {
+          const res = await fetch('http://localhost:8788/validate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ number: value })
+          });
+
+          const { valid, message } = await res.json();
+
+          if (valid) {
+            // ✅ Validado - mostrar notificación verde y avanzar
+            showSuccessNotification(message);
+            setTimeout(() => {
+              quizState.currentStep++;
+              renderQuizInline();
+
+              // AUTOSCROLL a la 4ta etapa
+              setTimeout(() => {
+                const quizContainer = document.getElementById('plin-quiz-inline');
+                if (quizContainer) {
+                  quizContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  log('✓ Autoscroll a etapa 4');
+                }
+              }, 300);
+            }, 1500);
+          } else {
+            // ❌ NO validado - mostrar notificación roja y NO avanzar
+            showErrorNotification(message);
+            continueBtn.disabled = false;
+            continueBtn.textContent = 'Continuar →';
+          }
+        } catch (error) {
+          log('❌ Error validando número:', error.message);
+          showErrorNotification('Error validando número. Por favor, intenta de nuevo.');
+          continueBtn.disabled = false;
+          continueBtn.textContent = 'Continuar →';
+        }
+        return; // Salir - no continuar normalmente
+      }
+
+      // FLUJO NORMAL: Para otros pasos
       if (quizState.currentStep === QUIZ_CONFIG.steps.length - 1) {
         showWarningInline();
       } else {
@@ -336,13 +381,42 @@
 
     document.body.appendChild(overlay);
 
+    // Validar formato de WhatsApp
+    function isValidWhatsAppNumber(number) {
+      // Solo números, +, y espacios/guiones
+      const cleaned = number.replace(/[\s\-()]/g, '');
+
+      // Debe empezar con + o un dígito
+      if (!cleaned.match(/^(\+)?[\d]{7,}$/)) {
+        log('❌ Formato de número inválido');
+        return false;
+      }
+
+      // Si tiene +, debe tener al menos 10-15 dígitos (formato internacional)
+      if (cleaned.startsWith('+')) {
+        const digits = cleaned.slice(1);
+        if (digits.length < 10 || digits.length > 15) {
+          log('❌ Número internacional debe tener 10-15 dígitos');
+          return false;
+        }
+      }
+
+      return true;
+    }
+
     // Fetch foto de WhatsApp de la API
     async function fetchAndSetPhoto(phoneNumber) {
       const avatarContainer = overlay.querySelector('.plin-paywall-avatar-placeholder');
       if (!avatarContainer) return;
 
+      // Validar formato antes de hacer la llamada
+      if (!isValidWhatsAppNumber(phoneNumber)) {
+        log('⚠️ Número de WhatsApp inválido');
+        return;
+      }
+
       try {
-        const res = await fetch('/api/whatsapp-photo', {
+        const res = await fetch('http://localhost:8787/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ number: phoneNumber })
