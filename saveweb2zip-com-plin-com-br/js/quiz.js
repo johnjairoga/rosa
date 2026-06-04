@@ -20,8 +20,8 @@
         subtitle: 'Selecciona una opción para continuar',
         inputType: 'choice',
         options: [
-          { value: 'hombre', label: '👨 Hombre', icon: '👨' },
-          { value: 'mujer', label: '👩 Mujer', icon: '👩' }
+          { value: 'hombre', label: 'Hombre', icon: '🧔' },
+          { value: 'mujer', label: 'Mujer', icon: '👩' }
         ],
         dataKey: 'searchType'
       },
