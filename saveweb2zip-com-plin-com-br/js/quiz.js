@@ -84,6 +84,40 @@
     return true;
   }
 
+  function setButtonState(btn, state, message) {
+    const PINK = 'linear-gradient(135deg, #ec4899 0%, #db2777 100%)';
+    const GREEN = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+    const RED   = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+    const GRAY  = 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)';
+
+    switch (state) {
+      case 'validating':
+        btn.disabled = true;
+        btn.textContent = 'Validando número...';
+        btn.style.background = GRAY;
+        btn.style.transform = 'none';
+        btn.style.boxShadow = 'none';
+        break;
+      case 'success':
+        btn.disabled = true;
+        btn.textContent = '✓ Número verificado!';
+        btn.style.background = GREEN;
+        break;
+      case 'error':
+        btn.disabled = false;
+        btn.textContent = message || '✗ Intenta con otro número';
+        btn.style.background = RED;
+        setTimeout(() => setButtonState(btn, 'idle'), 2500);
+        break;
+      default:
+        btn.disabled = false;
+        btn.textContent = 'Continuar →';
+        btn.style.background = PINK;
+        btn.style.transform = '';
+        btn.style.boxShadow = '';
+    }
+  }
+
   // ============= RENDER INLINE =============
   function createQuizHTML() {
     const step = QUIZ_CONFIG.steps[quizState.currentStep];
@@ -286,49 +320,50 @@
       quizState.data[step.dataKey] = value;
       log(`Paso ${quizState.currentStep + 1} completado`, { [step.dataKey]: value });
 
-      // VALIDACIÓN ESPECIAL: Paso 3 (índice 2) - personWhatsapp - validar si tiene WhatsApp
-      if (quizState.currentStep === 2) {
-        continueBtn.disabled = true;
-        continueBtn.textContent = 'Validando número...';
+      // VALIDACIÓN ESPECIAL: Paso 4 (índice 3) - personWhatsapp - validar si tiene WhatsApp
+      if (quizState.currentStep === 3) {
+        setButtonState(continueBtn, 'validating');
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
 
         try {
           const res = await fetch('https://plin-whatsapp-api.criptosintrading.workers.dev/validate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ number: value })
+            body: JSON.stringify({ number: value }),
+            signal: controller.signal
           });
+          clearTimeout(timeoutId);
 
           const { valid, message } = await res.json();
 
           if (valid) {
-            // ✅ Validado - mostrar notificación verde y avanzar
-            showSuccessNotification(message);
+            setButtonState(continueBtn, 'success');
             setTimeout(() => {
               quizState.currentStep++;
               renderQuizInline();
 
-              // AUTOSCROLL a la 4ta etapa
               setTimeout(() => {
                 const quizContainer = document.getElementById('plin-quiz-inline');
                 if (quizContainer) {
                   quizContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                  log('✓ Autoscroll a etapa 4');
+                  log('✓ Autoscroll a etapa 5');
                 }
               }, 300);
             }, 1500);
           } else {
-            // ❌ NO validado - mostrar notificación roja y NO avanzar
-            showErrorNotification(message);
-            continueBtn.disabled = false;
-            continueBtn.textContent = 'Continuar →';
+            setButtonState(continueBtn, 'error', '✗ ' + (message || 'Intenta con otro número de WhatsApp'));
           }
         } catch (error) {
+          clearTimeout(timeoutId);
           log('❌ Error validando número:', error.message);
-          showErrorNotification('Error validando número. Por favor, intenta de nuevo.');
-          continueBtn.disabled = false;
-          continueBtn.textContent = 'Continuar →';
+          const msg = error.name === 'AbortError'
+            ? '✗ Tiempo agotado. Intenta de nuevo.'
+            : '✗ Error de conexión. Intenta de nuevo.';
+          setButtonState(continueBtn, 'error', msg);
         }
-        return; // Salir - no continuar normalmente
+        return;
       }
 
       // FLUJO NORMAL: Para otros pasos
