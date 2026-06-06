@@ -393,38 +393,6 @@ function populateResults() {
 }
 
 // ============================================
-// Control de Overlay del Video de Testimonio
-// ============================================
-
-function initTestimonyOverlay() {
-  const video = document.getElementById('testimony-video');
-  const overlay = document.getElementById('testimony-overlay');
-
-  if (!video || !overlay) return;
-
-  // Ocultar overlay cuando el video empieza a reproducirse
-  video.addEventListener('play', () => {
-    overlay.classList.add('hidden');
-  });
-
-  // Mostrar overlay si el usuario pausa al inicio
-  video.addEventListener('pause', () => {
-    if (video.currentTime === 0) {
-      overlay.classList.remove('hidden');
-    }
-  });
-
-  // Click en overlay para reproducir
-  overlay.addEventListener('click', (e) => {
-    e.stopPropagation();
-    video.play();
-  });
-
-  // Mostrar overlay al cargar la página (estado inicial)
-  overlay.classList.remove('hidden');
-}
-
-// ============================================
 // Inicialización
 // ============================================
 
@@ -438,7 +406,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial state: empty ring
     ring.style.strokeDashoffset = '440';
   }
-
-  // Inicializar overlay del testimonio
-  initTestimonyOverlay();
 });
