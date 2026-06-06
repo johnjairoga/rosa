@@ -272,7 +272,7 @@ async function validateWhatsApp(number) {
 async function getWhatsAppPhoto(number) {
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
+    const timeout = setTimeout(() => controller.abort(), 12000);
 
     const response = await fetch(`${WORKER_URL}/`, {
       method: 'POST',
