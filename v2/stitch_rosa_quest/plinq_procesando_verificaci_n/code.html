@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Plinq | Procesando Resultados</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-highest": "#d9e3f6",
+                    "tertiary-fixed-dim": "#cec4ca",
+                    "on-secondary-container": "#3f1e8c",
+                    "surface-dim": "#d0dbed",
+                    "surface-variant": "#d9e3f6",
+                    "on-primary": "#ffffff",
+                    "secondary": "#674bb5",
+                    "on-tertiary-fixed": "#1f1a1e",
+                    "surface-bright": "#f8f9ff",
+                    "on-primary-fixed-variant": "#8c0053",
+                    "on-background": "#121c2a",
+                    "outline-variant": "#debec8",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed": "#3e0022",
+                    "on-error-container": "#93000a",
+                    "primary-container": "#d23284",
+                    "glass-surface": "rgba(255, 255, 255, 0.7)",
+                    "surface-container-low": "#eff4ff",
+                    "surface": "#f8f9ff",
+                    "secondary-fixed-dim": "#cebdff",
+                    "verified-teal": "#2DD4BF",
+                    "on-surface": "#121c2a",
+                    "glass-border": "rgba(255, 255, 255, 0.4)",
+                    "tertiary-fixed": "#eae0e6",
+                    "inverse-surface": "#27313f",
+                    "surface-container-high": "#dee9fc",
+                    "tertiary-container": "#7a7278",
+                    "on-primary-container": "#fffbff",
+                    "primary-fixed": "#ffd9e4",
+                    "on-tertiary-container": "#fffbff",
+                    "on-secondary": "#ffffff",
+                    "primary": "#b10e6b",
+                    "on-surface-variant": "#574048",
+                    "secondary-fixed": "#e8ddff",
+                    "on-secondary-fixed-variant": "#4f319c",
+                    "on-secondary-fixed": "#21005e",
+                    "outline": "#8b7079",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed-variant": "#4b454a",
+                    "inverse-primary": "#ffb0cd",
+                    "surface-container-lowest": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "safety-xp": "#DB2777",
+                    "mission-gold": "#FBBF24",
+                    "on-error": "#ffffff",
+                    "surface-tint": "#b4136d",
+                    "primary-fixed-dim": "#ffb0cd",
+                    "secondary-container": "#ab8ffe",
+                    "surface-container": "#e6eeff",
+                    "tertiary": "#615a5f",
+                    "inverse-on-surface": "#eaf1ff",
+                    "background": "#f8f9ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-margin": "20px",
+                    "stack-sm": "12px",
+                    "stack-lg": "40px",
+                    "base": "8px",
+                    "stack-md": "24px",
+                    "gutter": "16px"
+            },
+            "fontFamily": {
+                    "xp-display": ["Plus Jakarta Sans"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"],
+                    "body-lg": ["Inter"],
+                    "headline-xl": ["Plus Jakarta Sans"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "xp-display": ["20px", {"lineHeight": "1", "letterSpacing": "0.02em", "fontWeight": "800"}],
+                    "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-xl": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.3; }
+            100% { transform: scale(0.8); opacity: 0.5; }
+        }
+        
+        .pulse-animation {
+            animation: pulse-ring 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .loading-text-transition {
+            transition: opacity 0.5s ease-in-out;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md overflow-x-hidden">
+<!-- TopAppBar - Suppressed during transactional processing as per UI rules -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-container-margin h-16 backdrop-blur-md border-b border-glass-border bg-glass-surface shadow-sm">
+<div class="flex items-center gap-2">
+<span class="font-xp-display text-xp-display text-primary">Plinq</span>
+</div>
+<div class="text-on-surface-variant font-label-md">
+            Verificación en curso
+        </div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-grow flex flex-col items-center justify-center pt-16 px-container-margin relative overflow-hidden">
+<!-- Background Ambient Accents -->
+<div class="absolute top-[-10%] right-[-10%] w-[300px] h-[300px] bg-primary/10 rounded-full blur-[100px]"></div>
+<div class="absolute bottom-[-10%] left-[-10%] w-[300px] h-[300px] bg-secondary/10 rounded-full blur-[100px]"></div>
+<section class="max-w-xl w-full flex flex-col items-center text-center z-10">
+<!-- Central Animated Loading State -->
+<div class="relative w-48 h-48 mb-stack-lg flex items-center justify-center">
+<!-- Pulse Rings -->
+<div class="absolute inset-0 bg-primary/20 rounded-full pulse-animation"></div>
+<div class="absolute inset-4 bg-secondary/20 rounded-full pulse-animation" style="animation-delay: 1s;"></div>
+<!-- Center Icon -->
+<div class="relative w-24 h-24 bg-white rounded-full shadow-lg flex items-center justify-center glass-card">
+<span class="material-symbols-outlined text-primary text-5xl" style="font-variation-settings: 'FILL' 1;">
+                        security
+                    </span>
+</div>
+<!-- Floating Data Nodes -->
+<div class="absolute top-0 right-0 p-2 bg-verified-teal rounded-full shadow-sm animate-bounce" style="animation-duration: 3s;">
+<span class="material-symbols-outlined text-white text-sm" style="font-variation-settings: 'FILL' 1;">done</span>
+</div>
+<div class="absolute bottom-4 left-0 p-2 bg-mission-gold rounded-full shadow-sm animate-bounce" style="animation-duration: 4s;">
+<span class="material-symbols-outlined text-white text-sm" style="font-variation-settings: 'FILL' 1;">shield</span>
+</div>
+</div>
+<!-- Content Header -->
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg mb-stack-sm">
+                Estamos procesando la información de <span class="text-primary">Juan Pérez</span>.
+            </h1>
+<p class="font-body-md text-on-surface-variant max-w-sm mb-stack-md">
+                Esto tomará solo unos segundos. Estamos analizando múltiples capas de seguridad para brindarte claridad total.
+            </p>
+<!-- Dynamic Status Text -->
+<div class="h-8 flex items-center justify-center mb-stack-lg">
+<span class="font-label-md text-secondary loading-text-transition" id="loading-status">Analizando bases de datos...</span>
+</div>
+<!-- Safety XP Progress Bar -->
+<div class="w-full glass-card p-6 rounded-xl flex flex-col gap-4">
+<div class="flex justify-between items-center mb-2">
+<span class="font-label-md text-on-surface">Progreso del Reporte</span>
+<span class="font-xp-display text-primary">90%</span>
+</div>
+<div class="w-full h-[12px] bg-secondary/10 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-safety-xp transition-all duration-1000 ease-out" id="progress-bar" style="width: 90%;"></div>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<span class="material-symbols-outlined text-verified-teal text-base" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="text-[12px] text-on-surface-variant font-label-md uppercase tracking-wider">Verificación de confianza activa</span>
+</div>
+</div>
+</section>
+<!-- Contextual Mission Card (Soft Glassmorphism) -->
+<div class="mt-stack-lg w-full max-w-md">
+<div class="glass-card p-gutter rounded-xl flex items-center gap-gutter relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-2 bg-mission-gold text-white font-label-md rounded-bl-xl">
+                    XP +50
+                </div>
+<div class="flex-shrink-0 w-12 h-12 bg-primary-fixed text-primary rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+</div>
+<div>
+<h3 class="font-headline-md text-sm md:text-base mb-1">Casi listo para tu medalla</h3>
+<p class="font-body-md text-xs text-on-surface-variant">Tu reporte premium de confianza está siendo generado bajo los más altos estándares de privacidad.</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Decorative Image Section -->
+<div class="w-full max-w-7xl mx-auto px-container-margin py-stack-md flex justify-center opacity-40">
+<div class="w-full h-24 rounded-2xl overflow-hidden border border-glass-border">
+<img class="w-full h-full object-cover grayscale" data-alt="A sophisticated abstract technological background featuring glowing digital grid lines, floating data nodes, and futuristic connections in shades of muted purple and blue. The atmosphere is professional, clean, and high-tech, representing the intersection of big data and personal safety. The soft lighting and shallow depth of field create a modern glassmorphism aesthetic that complements the brand's resilient and reliable personality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzRYhfTkCAFQrmQq9C2bMOCkBmuJNmw_nskUsdQEoOU6cgQQoZLjgv7YlPhSP_r2_56tpWFLOcHOKgW5VpazOxjg5rCfIkkOgWoV-Rhx3Mtm7VM8-8WcJcEHWrz0NtKivnY6pY6bLieAZE4wA8QVak-gss_BTCThMKDwAehGKiOE64zXoIQlU_xbm44kNKkr1rwO9qXRcqMefxKEedxadK5yhtn03jEEjnMou59-yaswlWbPlzk2FhkI5jh5gANw1E62AmovH3GQI"/>
+</div>
+</div>
+<!-- Footer - Simplified for the processing page -->
+<footer class="w-full py-stack-lg border-t border-outline-variant/30 bg-surface-container-lowest">
+<div class="flex flex-col md:flex-row justify-between items-center px-container-margin max-w-7xl mx-auto gap-gutter">
+<span class="font-label-md text-on-surface-variant">© 2024 Plinq Safety. Empowering through resilience.</span>
+<div class="flex gap-gutter">
+<span class="font-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Guía de Seguridad</span>
+<span class="font-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Términos de Servicio</span>
+</div>
+</div>
+</footer>
+<script>
+        const statusText = document.getElementById('loading-status');
+        const progressBar = document.getElementById('progress-bar');
+        const phrases = [
+            "Analizando bases de datos...",
+            "Cruzando información pública...",
+            "Verificando antecedentes...",
+            "Generando reporte de confianza...",
+            "Finalizando detalles..."
+        ];
+        
+        let currentIndex = 0;
+
+        function updateStatus() {
+            statusText.style.opacity = '0';
+            setTimeout(() => {
+                currentIndex = (currentIndex + 1) % phrases.length;
+                statusText.innerText = phrases[currentIndex];
+                statusText.style.opacity = '1';
+            }, 500);
+        }
+
+        // Cycle through text every 2.5 seconds
+        setInterval(updateStatus, 2500);
+
+        // Slow progress bar movement for "near completion" feel
+        let currentWidth = 90;
+        const progressInterval = setInterval(() => {
+            if (currentWidth < 98) {
+                currentWidth += 0.5;
+                progressBar.style.width = currentWidth + '%';
+            } else {
+                clearInterval(progressInterval);
+            }
+        }, 3000);
+
+        // Visual Interaction: Mouse follow subtle tilt for the main section
+        document.addEventListener('mousemove', (e) => {
+            const amount = 2;
+            const x = (window.innerWidth / 2 - e.pageX) / (window.innerWidth / 2) * amount;
+            const y = (window.innerHeight / 2 - e.pageY) / (window.innerHeight / 2) * amount;
+            const canvas = document.querySelector('main section');
+            canvas.style.transform = `perspective(1000px) rotateY(${x}deg) rotateX(${-y}deg)`;
+        });
+    </script>
+</body></html>

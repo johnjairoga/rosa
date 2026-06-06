@@ -495,51 +495,53 @@
     </section>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
-      <div class="glass-card rounded-xl p-stack-md flex flex-col items-center justify-center space-y-stack-sm relative">
-        <div class="absolute top-2 right-2 px-3 py-1 bg-verified-teal/20 text-verified-teal rounded-full text-xs font-bold flex items-center gap-1">
-          <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
-          ELITE
+      <!-- Score ring card — WARNING/ALERT style -->
+      <div class="glass-card rounded-xl p-stack-md flex flex-col items-center justify-center space-y-stack-sm relative border-2 border-orange-300">
+        <div class="absolute top-2 right-2 px-3 py-1 bg-orange-100 text-orange-600 rounded-full text-xs font-bold flex items-center gap-1 animate-pulse">
+          <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">warning</span>
+          EN ANÁLISIS
         </div>
         <div class="relative w-40 h-40">
           <svg class="w-full h-full transform -rotate-90">
             <circle class="text-surface-container-highest" cx="80" cy="80" fill="transparent" r="70" stroke="currentColor" stroke-width="12"></circle>
-            <circle class="score-ring" cx="80" cy="80" fill="transparent" r="70" stroke="url(#gradient)" stroke-dasharray="440" stroke-dashoffset="44" stroke-linecap="round" stroke-width="12"></circle>
+            <circle class="score-ring" cx="80" cy="80" fill="transparent" r="70" stroke="url(#gradient-warning)" stroke-dasharray="440" stroke-dashoffset="44" stroke-linecap="round" stroke-width="12"></circle>
             <defs>
-              <linearGradient id="gradient" x1="0%" x2="100%" y1="0%" y2="0%">
-                <stop offset="0%" style="stop-color:#b10e6b"></stop>
-                <stop offset="100%" style="stop-color:#DB2777"></stop>
+              <linearGradient id="gradient-warning" x1="0%" x2="100%" y1="0%" y2="0%">
+                <stop offset="0%" style="stop-color:#f97316"></stop>
+                <stop offset="100%" style="stop-color:#dc2626"></stop>
               </linearGradient>
             </defs>
           </svg>
           <div class="absolute inset-0 flex flex-col items-center justify-center">
-            <span class="font-headline-xl text-headline-xl text-primary" id="trust-score">92</span>
-            <span class="font-label-md text-label-md text-on-surface-variant uppercase">Confianza</span>
+            <span class="font-headline-xl text-headline-xl text-orange-600" id="trust-score">45</span>
+            <span class="font-label-md text-label-md text-orange-500 uppercase">RIESGO</span>
           </div>
         </div>
-        <p class="text-center font-body-md font-semibold text-secondary">Excelente Reputación</p>
+        <p class="text-center font-body-md font-semibold text-error">Actividad Sospechosa Detectada</p>
       </div>
 
-      <div class="glass-card rounded-xl p-stack-md flex flex-col justify-center space-y-stack-sm">
+      <!-- Profile card — ALERT badges -->
+      <div class="glass-card rounded-xl p-stack-md flex flex-col justify-center space-y-stack-sm border-2 border-orange-300">
         <div class="flex items-center gap-gutter">
           <img class="w-16 h-16 rounded-full object-cover border-2 border-white shadow-sm" id="result-profile-photo" src="/images/avatar-placeholder.png" alt="Foto"/>
           <div>
             <h3 class="font-headline-md text-headline-md" id="result-name">Mariana C.</h3>
-            <p class="font-label-md text-label-md text-on-surface-variant">Verificada hace 2 días</p>
+            <p class="font-label-md text-label-md text-orange-600 font-semibold">⚠️ Verificada recientemente</p>
           </div>
         </div>
         <hr class="border-outline-variant/30"/>
         <div class="space-y-2">
           <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-safety-xp">verified_user</span>
-            <span class="font-body-md">Identidad Confirmada</span>
+            <span class="material-symbols-outlined text-error">gpp_bad</span>
+            <span class="font-body-md text-error">Identidad no verificada</span>
           </div>
           <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-safety-xp">history_edu</span>
-            <span class="font-body-md">Sin Antecedentes Penales</span>
+            <span class="material-symbols-outlined text-orange-500">warning</span>
+            <span class="font-body-md text-orange-600">Comportamiento irregular detectado</span>
           </div>
           <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-safety-xp">groups</span>
-            <span class="font-body-md">Validación Social (+)</span>
+            <span class="material-symbols-outlined text-error">manage_search</span>
+            <span class="font-body-md text-error">Historial oculto encontrado</span>
           </div>
         </div>
       </div>
@@ -576,45 +578,48 @@
           <span class="material-symbols-outlined text-xl text-verified-teal" style="font-variation-settings: 'FILL' 1;">check_circle</span>
         </div>
 
-        <div class="glass-card rounded-xl p-gutter flex items-center justify-between opacity-50">
+        <div class="glass-card rounded-xl p-gutter flex items-center justify-between border-l-4 border-error bg-error-container/10 relative">
+          <div class="absolute -left-2 top-1/2 -translate-y-1/2 w-3 h-3 bg-error rounded-full animate-pulse"></div>
           <div class="flex items-center gap-gutter">
-            <div class="bg-primary/10 p-3 rounded-lg text-primary">
+            <div class="bg-error/10 p-3 rounded-lg text-error">
               <span class="material-symbols-outlined">gavel</span>
             </div>
             <div>
               <p class="font-headline-md text-body-md font-bold">Antecedentes Criminales</p>
-              <p class="font-label-md text-label-md text-on-surface-variant blur-sm">Bloqueado</p>
+              <p class="font-label-md text-label-md text-error font-semibold">Datos comprometedores encontrados</p>
             </div>
           </div>
-          <span class="material-symbols-outlined text-xl">lock</span>
+          <span class="material-symbols-outlined text-xl text-error animate-pulse">lock_alert</span>
         </div>
 
-        <div class="glass-card rounded-xl p-gutter flex items-center justify-between opacity-50">
+        <div class="glass-card rounded-xl p-gutter flex items-center justify-between border-l-4 border-error bg-error-container/10 relative">
+          <div class="absolute -left-2 top-1/2 -translate-y-1/2 w-3 h-3 bg-error rounded-full animate-pulse"></div>
           <div class="flex items-center gap-gutter">
-            <div class="bg-primary/10 p-3 rounded-lg text-primary">
+            <div class="bg-error/10 p-3 rounded-lg text-error">
               <span class="material-symbols-outlined">public</span>
             </div>
             <div>
               <p class="font-headline-md text-body-md font-bold">Huella Digital</p>
-              <p class="font-label-md text-label-md text-on-surface-variant blur-sm">Bloqueado</p>
+              <p class="font-label-md text-label-md text-error font-semibold">Datos comprometedores encontrados</p>
             </div>
           </div>
-          <span class="material-symbols-outlined text-xl">lock</span>
+          <span class="material-symbols-outlined text-xl text-error animate-pulse">lock_alert</span>
         </div>
       </div>
     </section>
 
-    <button class="w-full bg-gradient-to-r from-primary to-safety-xp text-white py-4 px-6 rounded-xl font-headline-md shadow-lg animate-pulse flex items-center justify-center gap-2">
+    <button class="w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-4 px-6 rounded-xl font-headline-md shadow-lg animate-pulse flex items-center justify-center gap-2 border-2 border-red-500">
       <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">lock_open</span>
-      Obtener Reporte Completo — $4.99
+      🔓 VER QUÉ ENCONTRAMOS — $4.99
     </button>
+    <p class="text-center text-xs text-error font-semibold">⚠️ Este perfil tiene información crítica oculta</p>
 
-    <section class="glass-card rounded-xl p-stack-md bg-secondary-container/20">
+    <section class="glass-card rounded-xl p-stack-md bg-error-container/20 border-2 border-error/30">
       <div class="flex items-start gap-gutter">
-        <span class="material-symbols-outlined text-secondary">lightbulb</span>
+        <span class="material-symbols-outlined text-error animate-pulse">warning</span>
         <div>
-          <h5 class="font-headline-md text-body-md font-bold text-secondary mb-1">Resumen Plinq</h5>
-          <p class="font-body-md text-on-surface">Esta persona cumple estándares básicos. Desbloquea el reporte por $4.99 para ver el análisis completo incluyendo antecedentes criminales y huella digital.</p>
+          <h5 class="font-headline-md text-body-md font-bold text-error mb-1">Alerta de Seguridad</h5>
+          <p class="font-body-md text-on-surface">Detectamos señales de alerta en este perfil. Existe información crítica que necesitas conocer antes de continuar esta relación. No te arriesgues — desbloquea el informe completo ahora y conoce todos los detalles.</p>
         </div>
       </div>
     </section>

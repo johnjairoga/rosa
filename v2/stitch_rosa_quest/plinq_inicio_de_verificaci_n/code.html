@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Plinq | Relaciones Basadas en la Confianza</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#d9e3f6",
+                        "tertiary-fixed-dim": "#cec4ca",
+                        "on-secondary-container": "#3f1e8c",
+                        "surface-dim": "#d0dbed",
+                        "surface-variant": "#d9e3f6",
+                        "on-primary": "#ffffff",
+                        "secondary": "#674bb5",
+                        "on-tertiary-fixed": "#1f1a1e",
+                        "surface-bright": "#f8f9ff",
+                        "on-primary-fixed-variant": "#8c0053",
+                        "on-background": "#121c2a",
+                        "outline-variant": "#debec8",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#3e0022",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#d23284",
+                        "glass-surface": "rgba(255, 255, 255, 0.7)",
+                        "surface-container-low": "#eff4ff",
+                        "surface": "#f8f9ff",
+                        "secondary-fixed-dim": "#cebdff",
+                        "verified-teal": "#2DD4BF",
+                        "on-surface": "#121c2a",
+                        "glass-border": "rgba(255, 255, 255, 0.4)",
+                        "tertiary-fixed": "#eae0e6",
+                        "inverse-surface": "#27313f",
+                        "surface-container-high": "#dee9fc",
+                        "tertiary-container": "#7a7278",
+                        "on-primary-container": "#fffbff",
+                        "primary-fixed": "#ffd9e4",
+                        "on-tertiary-container": "#fffbff",
+                        "on-secondary": "#ffffff",
+                        "primary": "#b10e6b",
+                        "on-surface-variant": "#574048",
+                        "secondary-fixed": "#e8ddff",
+                        "on-secondary-fixed-variant": "#4f319c",
+                        "on-secondary-fixed": "#21005e",
+                        "outline": "#8b7079",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#4b454a",
+                        "inverse-primary": "#ffb0cd",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "safety-xp": "#DB2777",
+                        "mission-gold": "#FBBF24",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#b4136d",
+                        "primary-fixed-dim": "#ffb0cd",
+                        "secondary-container": "#ab8ffe",
+                        "surface-container": "#e6eeff",
+                        "tertiary": "#615a5f",
+                        "inverse-on-surface": "#eaf1ff",
+                        "background": "#f8f9ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-margin": "20px",
+                        "stack-sm": "12px",
+                        "stack-lg": "40px",
+                        "base": "8px",
+                        "stack-md": "24px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "xp-display": ["Plus Jakarta Sans"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"],
+                        "headline-xl": ["Plus Jakarta Sans"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "xp-display": ["20px", {"lineHeight": "1", "letterSpacing": "0.02em", "fontWeight": "800"}],
+                        "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-xl": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        .bg-mesh {
+            background: radial-gradient(at 0% 0%, #ffd9e4 0%, transparent 50%),
+                        radial-gradient(at 100% 100%, #e8ddff 0%, transparent 50%);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden bg-mesh min-h-screen">
+<!-- Top Navigation Bar (Shared Component) -->
+<header class="fixed top-0 w-full backdrop-blur-md border-b border-glass-border shadow-sm flex items-center justify-between px-container-margin h-16 w-full z-50 bg-glass-surface">
+<div class="flex items-center gap-4">
+<span class="font-xp-display text-xp-display text-primary">Plinq</span>
+</div>
+<nav class="hidden md:flex gap-gutter items-center">
+<a class="font-label-md text-label-md text-primary font-bold" href="#">Inicio</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-highest/50 transition-colors px-3 py-2 rounded-lg" href="#">Cómo Funciona</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-highest/50 transition-colors px-3 py-2 rounded-lg" href="#">Misión</a>
+</nav>
+<button class="md:hidden p-2 active:scale-95 duration-200">
+<span class="material-symbols-outlined text-primary">menu</span>
+</button>
+</header>
+<main class="pt-24 pb-stack-lg max-w-7xl mx-auto px-container-margin">
+<!-- Hero Section -->
+<section class="flex flex-col lg:flex-row items-center gap-stack-lg mb-stack-lg">
+<div class="lg:w-1/2 space-y-stack-md text-center lg:text-left">
+<h1 class="font-headline-xl text-headline-xl lg:text-headline-xl text-on-surface leading-tight">
+                    Las relaciones de confianza comienzan con <span class="text-primary">información.</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg mx-auto lg:mx-0">
+                    Descubre los antecedentes de la persona que te interesa de forma rápida, simple y anónima. La seguridad es tu derecho.
+                </p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+<button class="bg-primary hover:bg-primary-container text-white px-8 py-4 rounded-full font-label-md text-label-md shadow-lg transform transition active:scale-95 flex items-center justify-center gap-2">
+                        Iniciar Verificación Gratuita
+                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">arrow_forward</span>
+</button>
+</div>
+<div class="flex items-center justify-center lg:justify-start gap-2 pt-4">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-white bg-secondary-container"></div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-primary-fixed"></div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-tertiary-fixed"></div>
+</div>
+<span class="text-label-md font-label-md text-on-surface-variant">+10,000 mujeres ya confían en Plinq</span>
+</div>
+</div>
+<div class="lg:w-1/2 relative">
+<div class="glass-card p-4 rounded-3xl overflow-hidden shadow-2xl relative z-10">
+<img alt="Plinq Community" class="w-full h-auto rounded-2xl object-cover aspect-square md:aspect-video lg:aspect-square" src="https://lh3.googleusercontent.com/aida/AP1WRLt3y5smI_cuJNiu_9sCMWpHZp0TIGNfG_jB_jVQONu65upP6sCiygv3EgkTgoFT4xAC1X5GuWySBDX2qKOByVNp-f4jtordBPepbOG_sAOZFiZIgAUrMUl2x0UJNuYSWOm5-gOIatId5PkYpjKt7nxqcR8wWOdtl5JPGxgfjbbIECfXNB5KTkzWqrWtRocO9SKv6n5pNIrBw7ILFLZqTInD2x7eUDXETSgpbVIY9mizn2wkufXn-wW6Jjk"/>
+<div class="absolute bottom-8 left-8 right-8 glass-card p-4 rounded-2xl shadow-lg flex items-center gap-4">
+<div class="w-10 h-10 bg-verified-teal rounded-full flex items-center justify-center text-white shrink-0">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Verificación Segura</p>
+<p class="text-xs text-on-surface-variant">Datos protegidos por protocolos LGPD</p>
+</div>
+</div>
+</div>
+<!-- Decorative Elements -->
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-primary/10 blur-3xl rounded-full"></div>
+<div class="absolute -bottom-10 -left-10 w-48 h-48 bg-secondary/10 blur-3xl rounded-full"></div>
+</div>
+</section>
+<!-- Three Steps Section (Simplified Bento) -->
+<section class="py-stack-lg">
+<div class="text-center mb-stack-md">
+<h2 class="font-headline-md text-headline-md text-on-surface">Cómo Funciona</h2>
+<p class="text-on-surface-variant mt-2">Rápido. Simple. Anónimo.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Step 1 -->
+<div class="glass-card p-stack-md rounded-3xl hover:border-primary/40 transition-colors group">
+<div class="w-12 h-12 rounded-2xl bg-primary-fixed flex items-center justify-center text-primary mb-stack-sm group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined font-bold">person_search</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">1. Ingresa datos</h3>
+<p class="text-on-surface-variant font-body-md">Solo necesitas el nombre completo o número telefónico de la persona para comenzar la búsqueda.</p>
+</div>
+<!-- Step 2 -->
+<div class="glass-card p-stack-md rounded-3xl hover:border-secondary/40 transition-colors group">
+<div class="w-12 h-12 rounded-2xl bg-secondary-fixed flex items-center justify-center text-secondary mb-stack-sm group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined font-bold">shield_with_heart</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">2. Validamos</h3>
+<p class="text-on-surface-variant font-body-md">Nuestro sistema escanea bases de datos oficiales y antecedentes criminales en segundos de forma confidencial.</p>
+</div>
+<!-- Step 3 -->
+<div class="glass-card p-stack-md rounded-3xl hover:border-verified-teal/40 transition-colors group">
+<div class="w-12 h-12 rounded-2xl bg-teal-100 flex items-center justify-center text-verified-teal mb-stack-sm group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined font-bold">description</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">3. Obtén tu reporte</h3>
+<p class="text-on-surface-variant font-body-md">Recibe un reporte detallado para que puedas tomar decisiones informadas sobre tus conexiones personales.</p>
+</div>
+</div>
+</section>
+<!-- Gamified Mission / Progress Callout -->
+<section class="mt-stack-lg p-stack-lg glass-card rounded-[2.5rem] relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-gutter border-2 border-primary/20">
+<div class="relative z-10 max-w-xl">
+<div class="inline-block px-3 py-1 bg-mission-gold/20 text-mission-gold rounded-full font-label-md text-xs mb-4 uppercase tracking-wider">Misión de Seguridad</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-stack-sm">Tu tranquilidad no es un lujo, es una prioridad.</h2>
+<p class="text-on-surface-variant font-body-md mb-stack-md">Estamos construyendo una red de apoyo donde cada validación contribuye a una comunidad más segura para todas.</p>
+<!-- XP Bar Mockup -->
+<div class="w-full max-w-sm">
+<div class="flex justify-between items-end mb-2">
+<span class="text-label-md font-label-md text-primary">Nivel de Proactividad</span>
+<span class="text-label-md font-label-md text-on-surface-variant">LVL 4</span>
+</div>
+<div class="h-3 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-safety-xp w-3/4 rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="relative z-10">
+<button class="bg-primary text-white w-24 h-24 rounded-full flex flex-col items-center justify-center font-label-md text-[10px] hover:scale-110 transition active:scale-95 shadow-xl group">
+<span class="material-symbols-outlined text-3xl mb-1 group-hover:animate-bounce">heart_plus</span>
+                    UNIRSE
+                </button>
+</div>
+<!-- Atmospheric Shape -->
+<div class="absolute -top-24 -right-24 w-64 h-64 bg-primary/5 blur-3xl rounded-full"></div>
+</section>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="bg-surface-container-lowest border-t border-outline-variant/30 w-full py-stack-lg mt-stack-lg">
+<div class="flex flex-col md:flex-row justify-between items-center px-container-margin max-w-7xl mx-auto gap-gutter">
+<div class="flex flex-col items-center md:items-start gap-2">
+<span class="font-xp-display text-xp-display text-primary">Plinq</span>
+<p class="font-label-md text-label-md text-on-surface-variant">© 2024 Plinq Safety. Empowering through resilience.</p>
+</div>
+<div class="flex gap-6 flex-wrap justify-center">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="#">Privacy Policy</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="#">Terms of Service</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="#">Safety Guide</a>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interaction for the verification button
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                // Potential for adding subtle hover sound or haptic feedback triggers
+            });
+        });
+
+        // Simple scroll reveal effect for cards
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-10');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-10');
+            observer.observe(card);
+        });
+    </script>
+</body></html>

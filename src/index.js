@@ -22,9 +22,9 @@ async function validateWhatsAppNumber(request, env, corsHeaders) {
       });
     }
 
-    // Validar formato
-    const cleaned = number.replace(/[\s\-()]/g, '');
-    if (!cleaned.match(/^(\+)?[\d]{7,}$/)) {
+    // Validar formato (debe ser solo dígitos, 10-15 caracteres)
+    const cleaned = number.replace(/\D/g, '');
+    if (!cleaned.match(/^\d{10,15}$/)) {
       return new Response(JSON.stringify({ valid: false, message: 'Formato inválido' }), {
         status: 200,
         headers: { 'Content-Type': 'application/json', ...corsHeaders }
@@ -40,13 +40,9 @@ async function validateWhatsAppNumber(request, env, corsHeaders) {
     }
 
     // Llamar a RapidAPI WhatsappNumberHasItWithToken
-    // RapidAPI espera el número SIN el + inicial
-    const phoneForApi = cleaned.replace(/^\+/, '');
-
+    // cleaned ya contiene solo dígitos (558296771065)
     console.log('Sending to RapidAPI:', {
-      phone_number: phoneForApi,
-      cleaned: cleaned,
-      original: number,
+      phone_number: cleaned,
       apiKeyExists: !!apiKey
     });
 
@@ -59,7 +55,7 @@ async function validateWhatsAppNumber(request, env, corsHeaders) {
           'x-rapidapi-host': 'whatsapp-number-validator3.p.rapidapi.com',
           'x-rapidapi-key': apiKey
         },
-        body: JSON.stringify({ phone_number: phoneForApi })
+        body: JSON.stringify({ phone_number: cleaned })
       }
     );
 

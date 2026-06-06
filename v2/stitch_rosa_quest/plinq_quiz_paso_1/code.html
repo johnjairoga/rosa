@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Plinq - Seguridad Proactiva</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Shared Components Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "surface-container-highest": "#d9e3f6",
+                "tertiary-fixed-dim": "#cec4ca",
+                "on-secondary-container": "#3f1e8c",
+                "surface-dim": "#d0dbed",
+                "surface-variant": "#d9e3f6",
+                "on-primary": "#ffffff",
+                "secondary": "#674bb5",
+                "on-tertiary-fixed": "#1f1a1e",
+                "surface-bright": "#f8f9ff",
+                "on-primary-fixed-variant": "#8c0053",
+                "on-background": "#121c2a",
+                "outline-variant": "#debec8",
+                "on-tertiary": "#ffffff",
+                "on-primary-fixed": "#3e0022",
+                "on-error-container": "#93000a",
+                "primary-container": "#d23284",
+                "glass-surface": "rgba(255, 255, 255, 0.7)",
+                "surface-container-low": "#eff4ff",
+                "surface": "#f8f9ff",
+                "secondary-fixed-dim": "#cebdff",
+                "verified-teal": "#2DD4BF",
+                "on-surface": "#121c2a",
+                "glass-border": "rgba(255, 255, 255, 0.4)",
+                "tertiary-fixed": "#eae0e6",
+                "inverse-surface": "#27313f",
+                "surface-container-high": "#dee9fc",
+                "tertiary-container": "#7a7278",
+                "on-primary-container": "#fffbff",
+                "primary-fixed": "#ffd9e4",
+                "on-tertiary-container": "#fffbff",
+                "on-secondary": "#ffffff",
+                "primary": "#b10e6b",
+                "on-surface-variant": "#574048",
+                "secondary-fixed": "#e8ddff",
+                "on-secondary-fixed-variant": "#4f319c",
+                "on-secondary-fixed": "#21005e",
+                "outline": "#8b7079",
+                "error": "#ba1a1a",
+                "on-tertiary-fixed-variant": "#4b454a",
+                "inverse-primary": "#ffb0cd",
+                "surface-container-lowest": "#ffffff",
+                "error-container": "#ffdad6",
+                "safety-xp": "#DB2777",
+                "mission-gold": "#FBBF24",
+                "on-error": "#ffffff",
+                "surface-tint": "#b4136d",
+                "primary-fixed-dim": "#ffb0cd",
+                "secondary-container": "#ab8ffe",
+                "surface-container": "#e6eeff",
+                "tertiary": "#615a5f",
+                "inverse-on-surface": "#eaf1ff",
+                "background": "#f8f9ff"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "1.5rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "container-margin": "20px",
+                "stack-sm": "12px",
+                "stack-lg": "40px",
+                "base": "8px",
+                "stack-md": "24px",
+                "gutter": "16px"
+            },
+            "fontFamily": {
+                "xp-display": ["Plus Jakarta Sans"],
+                "label-md": ["Inter"],
+                "headline-lg": ["Plus Jakarta Sans"],
+                "headline-md": ["Plus Jakarta Sans"],
+                "headline-lg-mobile": ["Plus Jakarta Sans"],
+                "body-lg": ["Inter"],
+                "headline-xl": ["Plus Jakarta Sans"],
+                "body-md": ["Inter"]
+            },
+            "fontSize": {
+                "xp-display": ["20px", {"lineHeight": "1", "letterSpacing": "0.02em", "fontWeight": "800"}],
+                "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                "headline-xl": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      body {
+        background: radial-gradient(circle at 10% 20%, rgba(255, 217, 228, 0.4) 0%, rgba(248, 249, 255, 1) 90%);
+        min-height: 100vh;
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+      }
+      .active-option {
+        border-color: #b10e6b !important;
+        background: rgba(177, 14, 107, 0.05) !important;
+        transform: scale(1.02);
+      }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-on-surface selection:bg-primary-fixed">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full backdrop-blur-md border-b border-glass-border bg-glass-surface z-50 shadow-sm">
+<div class="flex items-center justify-between px-container-margin h-16 w-full max-w-7xl mx-auto">
+<button aria-label="Volver" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-highest/50 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<div class="font-xp-display text-xp-display text-primary">Plinq</div>
+<div class="w-10"></div> <!-- Spacer for symmetry -->
+</div>
+</header>
+<main class="pt-24 pb-stack-lg px-container-margin max-w-lg mx-auto min-h-screen flex flex-col">
+<!-- Progress Section -->
+<div class="mb-stack-lg">
+<div class="flex justify-between items-end mb-2">
+<span class="font-label-md text-label-md text-on-surface-variant">Paso 1 de 4</span>
+<span class="font-label-md text-label-md text-primary">25%</span>
+</div>
+<div class="h-3 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-safety-xp transition-all duration-700 ease-out" id="progress-bar" style="width: 25%"></div>
+</div>
+</div>
+<!-- Question Header -->
+<section class="mb-stack-lg text-center">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2">¿A quién estás buscando?</h1>
+<p class="font-body-md text-on-surface-variant">Selecciona una opción para continuar tu verificación.</p>
+</section>
+<!-- Quiz Options (Bento Grid Style) -->
+<div class="grid grid-cols-1 gap-gutter mb-stack-lg">
+<!-- Option: Hombre -->
+<button class="quiz-option glass-card p-6 rounded-xl flex items-center gap-6 text-left transition-all duration-300 hover:shadow-lg group" onclick="selectOption(this)">
+<div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center group-hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-4xl text-on-surface-variant group-hover:text-primary">person</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Hombre</h3>
+<p class="font-label-md text-label-md text-on-surface-variant opacity-70">Verificar perfil masculino</p>
+</div>
+<div class="ml-auto opacity-0 group-[.active-option]:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</button>
+<!-- Option: Mujer -->
+<button class="quiz-option glass-card p-6 rounded-xl flex items-center gap-6 text-left transition-all duration-300 hover:shadow-lg group" onclick="selectOption(this)">
+<div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center group-hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-4xl text-on-surface-variant group-hover:text-primary">person_4</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Mujer</h3>
+<p class="font-label-md text-label-md text-on-surface-variant opacity-70">Verificar perfil femenino</p>
+</div>
+<div class="ml-auto opacity-0 group-[.active-option]:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</button>
+</div>
+<!-- Motivational Tip (Soft Glassmorphism) -->
+<div class="mb-stack-lg p-4 rounded-xl border border-outline-variant/30 bg-white/40 flex items-start gap-3">
+<span class="material-symbols-outlined text-mission-gold">lightbulb</span>
+<p class="text-[13px] text-on-surface-variant italic">
+                Descubrir la verdad es el primer paso hacia una conexión más segura. Nuestras verificaciones son 100% confidenciales.
+            </p>
+</div>
+<!-- Action Area -->
+<div class="mt-auto space-y-4">
+<button class="w-full h-14 bg-surface-container-highest text-on-surface-variant font-label-md text-label-md rounded-full transition-all duration-300 flex items-center justify-center gap-2 cursor-not-allowed" disabled="" id="next-button">
+                Siguiente
+                <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+<p class="text-center font-label-md text-label-md text-on-surface-variant/60">
+                Rápido. Simple. Anónimo.
+            </p>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-stack-lg border-t border-outline-variant/30 bg-surface-container-lowest">
+<div class="flex flex-col md:flex-row justify-between items-center px-container-margin max-w-7xl mx-auto gap-gutter">
+<div class="font-xp-display text-xp-display text-primary">Plinq</div>
+<div class="flex gap-gutter font-label-md text-label-md text-on-surface-variant">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-primary transition-colors" href="#">Safety Guide</a>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant text-center md:text-right">
+                © 2024 Plinq Safety. Empowering through resilience.
+            </p>
+</div>
+</footer>
+<script>
+        function selectOption(element) {
+            // Remove active class from all options
+            document.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.remove('active-option');
+            });
+            
+            // Add active class to clicked option
+            element.classList.add('active-option');
+            
+            // Enable next button
+            const btn = document.getElementById('next-button');
+            btn.disabled = false;
+            btn.classList.remove('bg-surface-container-highest', 'text-on-surface-variant', 'cursor-not-allowed');
+            btn.classList.add('bg-gradient-to-r', 'from-primary', 'to-safety-xp', 'text-on-primary', 'shadow-lg', 'active:scale-95');
+            
+            // Subtle vibration feedback if mobile
+            if (window.navigator.vibrate) {
+                window.navigator.vibrate(10);
+            }
+        }
+
+        // Simple entry animation for cards
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.quiz-option');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100 * (index + 1));
+            });
+        });
+    </script>
+</body></html>

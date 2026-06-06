@@ -139,8 +139,7 @@ function selectOption(element, gender) {
 // ============================================
 
 function isValidWhatsAppNumber(number) {
-  const cleaned = number.replace(/[\s\-()]/g, '');
-  return /^\+[\d]{10,15}$/.test(cleaned);
+  return /^\d{10,15}$/.test(number);
 }
 
 // ============================================
@@ -194,8 +193,8 @@ async function handleVerificar(event) {
     return;
   }
 
-  // Combinar código de país + número local
-  const phone = `+${selectedCountry.code}${localNumber.replace(/\D/g, '')}`;
+  // Combinar código de país + número local — NÚMERO CANÓNICO PURO (solo dígitos)
+  const phone = `${selectedCountry.code}${localNumber.replace(/\D/g, '')}`;
 
   // Validar formato de teléfono
   if (!isValidWhatsAppNumber(phone)) {
@@ -342,13 +341,13 @@ async function startProcessing() {
     }
   }, 3000);
 
-  // Fetch photo
-  const photoUrl = await getWhatsAppPhoto(state.phone);
-  state.photoUrl = photoUrl;
+  // Fetch photo — fix: extract URL string from photoUrl object
+  const photoData = await getWhatsAppPhoto(state.phone);
+  state.photoUrl = photoData || null;
 
-  // Generate trust score (85-96 range, deterministic por número)
+  // Generate trust score (34-52 range, zona de riesgo/alerta)
   const phoneHash = state.phone.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-  state.trustScore = 85 + (phoneHash % 12);
+  state.trustScore = 34 + (phoneHash % 19);
 
   // Wait minimum 4 seconds for UX
   await new Promise(resolve => setTimeout(resolve, 4000));
@@ -391,16 +390,6 @@ function populateResults() {
     }, 300);
   }
 
-  // Teléfono (parcial)
-  const phoneElement = document.getElementById('result-phone');
-  const phoneDigits = state.phone.replace(/\D/g, '');
-  const maskedPhone = phoneDigits.slice(0, 3) + ' ****' + phoneDigits.slice(-2);
-  phoneElement.textContent = maskedPhone;
-
-  // ID Number (parcial)
-  const idElement = document.getElementById('result-id-partial');
-  const idDigits = state.idNumber.slice(0, 3) + '-XXXXX';
-  idElement.textContent = idDigits;
 }
 
 // ============================================

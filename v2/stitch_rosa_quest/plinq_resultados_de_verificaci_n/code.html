@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Reporte de Confianza | Plinq</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "surface-container-highest": "#d9e3f6",
+                "tertiary-fixed-dim": "#cec4ca",
+                "on-secondary-container": "#3f1e8c",
+                "surface-dim": "#d0dbed",
+                "surface-variant": "#d9e3f6",
+                "on-primary": "#ffffff",
+                "secondary": "#674bb5",
+                "on-tertiary-fixed": "#1f1a1e",
+                "surface-bright": "#f8f9ff",
+                "on-primary-fixed-variant": "#8c0053",
+                "on-background": "#121c2a",
+                "outline-variant": "#debec8",
+                "on-tertiary": "#ffffff",
+                "on-primary-fixed": "#3e0022",
+                "on-error-container": "#93000a",
+                "primary-container": "#d23284",
+                "glass-surface": "rgba(255, 255, 255, 0.7)",
+                "surface-container-low": "#eff4ff",
+                "surface": "#f8f9ff",
+                "secondary-fixed-dim": "#cebdff",
+                "verified-teal": "#2DD4BF",
+                "on-surface": "#121c2a",
+                "glass-border": "rgba(255, 255, 255, 0.4)",
+                "tertiary-fixed": "#eae0e6",
+                "inverse-surface": "#27313f",
+                "surface-container-high": "#dee9fc",
+                "tertiary-container": "#7a7278",
+                "on-primary-container": "#fffbff",
+                "primary-fixed": "#ffd9e4",
+                "on-tertiary-container": "#fffbff",
+                "on-secondary": "#ffffff",
+                "primary": "#b10e6b",
+                "on-surface-variant": "#574048",
+                "secondary-fixed": "#e8ddff",
+                "on-secondary-fixed-variant": "#4f319c",
+                "on-secondary-fixed": "#21005e",
+                "outline": "#8b7079",
+                "error": "#ba1a1a",
+                "on-tertiary-fixed-variant": "#4b454a",
+                "inverse-primary": "#ffb0cd",
+                "surface-container-lowest": "#ffffff",
+                "error-container": "#ffdad6",
+                "safety-xp": "#DB2777",
+                "mission-gold": "#FBBF24",
+                "on-error": "#ffffff",
+                "surface-tint": "#b4136d",
+                "primary-fixed-dim": "#ffb0cd",
+                "secondary-container": "#ab8ffe",
+                "surface-container": "#e6eeff",
+                "tertiary": "#615a5f",
+                "inverse-on-surface": "#eaf1ff",
+                "background": "#f8f9ff"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "container-margin": "20px",
+                "stack-sm": "12px",
+                "stack-lg": "40px",
+                "base": "8px",
+                "stack-md": "24px",
+                "gutter": "16px"
+            },
+            "fontFamily": {
+                "xp-display": ["Plus Jakarta Sans"],
+                "label-md": ["Inter"],
+                "headline-lg": ["Plus Jakarta Sans"],
+                "headline-md": ["Plus Jakarta Sans"],
+                "headline-lg-mobile": ["Plus Jakarta Sans"],
+                "body-lg": ["Inter"],
+                "headline-xl": ["Plus Jakarta Sans"],
+                "body-md": ["Inter"]
+            },
+            "fontSize": {
+                "xp-display": ["20px", {"lineHeight": "1", "letterSpacing": "0.02em", "fontWeight": "800"}],
+                "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                "headline-xl": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background: radial-gradient(circle at top left, #ffd9e4 0%, #f8f9ff 40%),
+                        radial-gradient(circle at bottom right, #e8ddff 0%, #f8f9ff 40%);
+            background-attachment: fixed;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        .score-ring {
+            transition: stroke-dashoffset 1s ease-out;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-on-surface">
+<!-- Top Navigation -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-container-margin h-16 bg-glass-surface backdrop-blur-md border-b border-glass-border shadow-sm">
+<div class="flex items-center gap-base">
+<span class="material-symbols-outlined text-primary" data-icon="arrow_back">arrow_back</span>
+<h1 class="font-xp-display text-xp-display text-primary">Plinq</h1>
+</div>
+<button class="p-base rounded-full hover:bg-surface-container-highest/50 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="share">share</span>
+</button>
+</header>
+<main class="pt-stack-lg pb-stack-lg px-container-margin max-w-2xl mx-auto space-y-stack-md mt-16">
+<!-- Header Section -->
+<section class="text-center py-stack-sm">
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2">Reporte de Confianza</h2>
+<p class="font-body-md text-on-surface-variant">Análisis detallado de seguridad para tu tranquilidad.</p>
+</section>
+<!-- Safety Score Bento Grid Section -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Main Score Card -->
+<div class="glass-card rounded-xl p-stack-md flex flex-col items-center justify-center space-y-stack-sm relative overflow-hidden md:col-span-1">
+<div class="absolute top-2 right-2 px-3 py-1 bg-verified-teal/20 text-verified-teal rounded-full text-xs font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+                    ELITE
+                </div>
+<!-- SVG Score Ring -->
+<div class="relative w-40 h-40">
+<svg class="w-full h-full transform -rotate-90">
+<circle class="text-surface-container-highest" cx="80" cy="80" fill="transparent" r="70" stroke="currentColor" stroke-width="12"></circle>
+<circle class="score-ring" cx="80" cy="80" fill="transparent" r="70" stroke="url(#gradient)" stroke-dasharray="440" stroke-dashoffset="44" stroke-linecap="round" stroke-width="12"></circle>
+<defs>
+<lineargradient id="gradient" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" style="stop-color:#b10e6b"></stop>
+<stop offset="100%" style="stop-color:#DB2777"></stop>
+</lineargradient>
+</defs>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-headline-xl text-headline-xl text-primary">92</span>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">Confianza</span>
+</div>
+</div>
+<p class="text-center font-body-md font-semibold text-secondary">Excelente Reputación</p>
+</div>
+<!-- Profile Summary Card -->
+<div class="glass-card rounded-xl p-stack-md flex flex-col justify-center space-y-stack-sm md:col-span-1">
+<div class="flex items-center gap-gutter">
+<div class="relative">
+<img class="w-16 h-16 rounded-full object-cover border-2 border-white shadow-sm" data-alt="A professional headshot of a smiling young woman with a friendly and trustworthy expression. She has medium-length dark hair and is wearing a clean white blazer. The background is a soft, blurred modern office environment with warm natural light, following a light-mode aesthetic with pink and purple accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbPYNvIRqyjwHNzEH3mvMfVmDWrRcCas2jgd6pfc4hu2-FTRRDEO9mHoCPaRyqxwQ0dPxPIICbxOdmGyMmrzL-98U4t6L0QiBYVjQiV7jW-tNOhLfnCRlar1SpdL9hvnpu_-gnSa11M5Rc790eqhgfq1hCDAQ18KMTj3BfO_kUsqpdfY_hmrJ0-VO3rZIyTJiEAIYslRFcbLM1L3pFlQI15gDt98fwEiUzq1_onDAVPn2iwW-wXkD9Z8z5-4ohjPX-Pct2VtH40eI"/>
+<div class="absolute -bottom-1 -right-1 bg-verified-teal p-0.5 rounded-full border-2 border-white">
+<span class="material-symbols-outlined text-white text-xs" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md">Mariana C.</h3>
+<p class="font-label-md text-label-md text-on-surface-variant">Verificada hace 2 días</p>
+</div>
+</div>
+<hr class="border-outline-variant/30"/>
+<div class="space-y-2">
+<div class="flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-safety-xp" data-icon="verified_user">verified_user</span>
+<span class="font-body-md">Identidad Confirmada</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-safety-xp" data-icon="history_edu">history_edu</span>
+<span class="font-body-md">Sin Antecedentes Penales</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-safety-xp" data-icon="groups">groups</span>
+<span class="font-body-md">Validación Social (+)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Detailed Verification Checklist -->
+<section class="space-y-stack-sm">
+<h4 class="font-label-md text-label-md text-primary uppercase tracking-widest px-1">Detalles de la Verificación</h4>
+<div class="space-y-gutter">
+<!-- Row 1 -->
+<div class="glass-card rounded-xl p-gutter flex items-center justify-between group hover:border-primary/40 transition-colors">
+<div class="flex items-center gap-gutter">
+<div class="bg-primary/10 p-3 rounded-lg text-primary">
+<span class="material-symbols-outlined" data-icon="badge">badge</span>
+</div>
+<div>
+<p class="font-headline-md text-body-md font-bold">Identidad Oficial</p>
+<p class="font-label-md text-label-md text-on-surface-variant">DNI/Pasaporte validado biométricamente</p>
+</div>
+</div>
+<div class="flex items-center gap-1 text-verified-teal">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="hidden md:inline font-label-md">Válido</span>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="glass-card rounded-xl p-gutter flex items-center justify-between group hover:border-primary/40 transition-colors">
+<div class="flex items-center gap-gutter">
+<div class="bg-primary/10 p-3 rounded-lg text-primary">
+<span class="material-symbols-outlined" data-icon="gavel">gavel</span>
+</div>
+<div>
+<p class="font-headline-md text-body-md font-bold">Antecedentes Criminales</p>
+<p class="font-label-md text-label-md text-on-surface-variant">Búsqueda en registros nacionales y locales</p>
+</div>
+</div>
+<div class="flex items-center gap-1 text-verified-teal">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="hidden md:inline font-label-md">Limpio</span>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="glass-card rounded-xl p-gutter flex items-center justify-between group hover:border-primary/40 transition-colors">
+<div class="flex items-center gap-gutter">
+<div class="bg-primary/10 p-3 rounded-lg text-primary">
+<span class="material-symbols-outlined" data-icon="public">public</span>
+</div>
+<div>
+<p class="font-headline-md text-body-md font-bold">Huella Digital</p>
+<p class="font-label-md text-label-md text-on-surface-variant">Redes sociales y presencia en línea</p>
+</div>
+</div>
+<div class="flex items-center gap-1 text-verified-teal">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="hidden md:inline font-label-md">Consistente</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Summary Insight -->
+<section class="glass-card rounded-xl p-stack-md bg-secondary-container/20 border-secondary/20">
+<div class="flex items-start gap-gutter">
+<div class="bg-secondary p-2 rounded-full text-white">
+<span class="material-symbols-outlined text-sm" data-icon="lightbulb">lightbulb</span>
+</div>
+<div>
+<h5 class="font-headline-md text-body-md font-bold text-secondary mb-1">Resumen Plinq</h5>
+<p class="font-body-md text-on-surface leading-relaxed">
+                        Mariana cumple con todos los estándares de seguridad de Plinq. No se encontraron discrepancias en su identidad ni registros negativos en las bases de datos consultadas. Su red de contactos validada refuerza su perfil de confianza.
+                    </p>
+</div>
+</div>
+</section>
+<!-- CTAs -->
+<div class="flex flex-col gap-gutter pt-stack-sm">
+<button class="w-full bg-primary text-white py-4 rounded-xl font-headline-md text-headline-md shadow-lg shadow-primary/20 hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2">
+                Ver Reporte Completo
+                <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<button class="w-full bg-white text-on-surface py-4 rounded-xl font-headline-md text-headline-md border border-outline-variant hover:bg-surface-container-low transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" data-icon="ios_share">ios_share</span>
+                Compartir con un contacto
+            </button>
+</div>
+<!-- Visual Empowerment Quote -->
+<div class="py-stack-md text-center">
+<p class="italic text-on-surface-variant font-body-md px-10">
+                "La seguridad no es un lujo, es el derecho de toda mujer a vivir con paz mental."
+            </p>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-stack-lg bg-surface-container-lowest border-t border-outline-variant/30 mt-stack-lg">
+<div class="flex flex-col md:flex-row justify-between items-center px-container-margin max-w-7xl mx-auto gap-gutter">
+<div class="flex flex-col items-center md:items-start gap-2">
+<span class="font-xp-display text-xp-display text-primary">Plinq</span>
+<p class="font-label-md text-label-md text-on-surface-variant text-center md:text-left">
+                    © 2024 Plinq Safety. Empowering through resilience.
+                </p>
+</div>
+<div class="flex gap-stack-md">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="#">Privacy Policy</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="#">Terms of Service</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="#">Safety Guide</a>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interaction for the score ring
+        document.addEventListener('DOMContentLoaded', () => {
+            const ring = document.querySelector('.score-ring');
+            if (ring) {
+                // Total circumference is 440 (2 * pi * 70)
+                // 92% of 440 is approx 404.8
+                // Offset = 440 - 404.8 = 35.2
+                setTimeout(() => {
+                    ring.style.strokeDashoffset = '35.2';
+                }, 300);
+            }
+        });
+    </script>
+</body></html>
