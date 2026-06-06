@@ -1,3 +1,17 @@
 name = "plin-whatsapp-api"
 main = "src/index.js"
 compatibility_date = "2025-07-18"
+
+[observability]
+enabled = false
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+persist = true
+invocation_logs = true
+
+[observability.traces]
+enabled = false
+persist = true
+head_sampling_rate = 1

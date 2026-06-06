@@ -43,6 +43,13 @@ async function validateWhatsAppNumber(request, env, corsHeaders) {
     // RapidAPI espera el número SIN el + inicial
     const phoneForApi = cleaned.replace(/^\+/, '');
 
+    console.log('Sending to RapidAPI:', {
+      phone_number: phoneForApi,
+      cleaned: cleaned,
+      original: number,
+      apiKeyExists: !!apiKey
+    });
+
     const response = await fetch(
       'https://whatsapp-number-validator3.p.rapidapi.com/WhatsappNumberHasItWithToken',
       {
@@ -55,6 +62,8 @@ async function validateWhatsAppNumber(request, env, corsHeaders) {
         body: JSON.stringify({ phone_number: phoneForApi })
       }
     );
+
+    console.log('RapidAPI response status:', response.status);
 
     // Verificar si la respuesta es JSON válido
     const contentType = response.headers.get('content-type');
