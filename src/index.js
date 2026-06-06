@@ -31,7 +31,12 @@ async function validateWhatsAppNumber(request, env, corsHeaders) {
       });
     }
 
-    const apiKey = env.RAPIDAPI_KEY;
+    // Lee la clave y limpia BOM si existe
+    let apiKey = env.RAPIDAPI_KEY;
+    if (apiKey) {
+      apiKey = apiKey.replace(/^﻿/, '').trim();
+    }
+
     if (!apiKey) {
       return new Response(JSON.stringify({ error: 'API configuration error' }), {
         status: 500,
@@ -194,7 +199,12 @@ export default {
         }
       }
 
-      const apiKey = env.RAPIDAPI_KEY_PHOTO;
+      // Lee la clave y limpia BOM si existe
+      let apiKey = env.RAPIDAPI_KEY_PHOTO;
+      if (apiKey) {
+        // Eliminar BOM UTF-8 (caracteres ﻿) si está presente
+        apiKey = apiKey.replace(/^﻿/, '').trim();
+      }
 
       if (!apiKey) {
         console.log('[PHOTO] ❌ API key not found: RAPIDAPI_KEY_PHOTO');
