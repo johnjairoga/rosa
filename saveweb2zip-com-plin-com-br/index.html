@@ -357,7 +357,7 @@
       <p class="font-body-md text-body-md text-on-surface-variant">Para realizar una verificación segura, necesitamos los datos básicos.</p>
     </section>
 
-    <div class="flex items-center gap-2 px-3 py-2 rounded-full bg-verified-teal/10 border border-verified-teal/30 self-start mb-4">
+    <div class="flex items-center gap-2 px-3 py-2 rounded-full bg-verified-teal/10 border border-verified-teal/30 self-center mb-4">
       <span class="material-symbols-outlined text-verified-teal text-sm" style="font-variation-settings:'FILL' 1;">lock</span>
       <span class="text-[13px] font-semibold text-verified-teal">100% anónimo — él nunca sabrá</span>
     </div>
@@ -371,13 +371,42 @@
       </div>
 
       <div class="space-y-2">
-        <label class="font-label-md text-label-md text-on-surface-variant" for="phone">Número de Teléfono WhatsApp</label>
-        <input class="w-full bg-white/50 border border-outline-variant focus:border-secondary focus:ring-1 focus:ring-secondary rounded-lg px-4 py-3 font-body-md transition-colors" id="phone" placeholder="+54 9 11 0000-0000" type="tel" required/>
+        <label class="font-label-md text-label-md text-on-surface-variant" for="phone_local">Número de Teléfono WhatsApp</label>
+
+        <!-- Contenedor unificado: bandera + input en una sola caja -->
+        <div class="flex items-center bg-white/50 border border-outline-variant rounded-lg
+                    overflow-visible transition-colors focus-within:border-secondary
+                    focus-within:ring-1 focus-within:ring-secondary relative" id="phone-wrapper">
+
+          <!-- Trigger del selector de país -->
+          <div class="relative shrink-0">
+            <button type="button" id="country-trigger"
+                    class="flex items-center gap-1 px-3 py-3 border-r border-outline-variant
+                           hover:bg-surface-container-highest transition-colors h-full"
+                    onclick="toggleCountryDropdown(event)">
+              <span id="selected-flag" class="text-lg leading-none">🇧🇷</span>
+              <span class="material-symbols-outlined text-sm text-on-surface-variant">expand_more</span>
+            </button>
+
+            <!-- Panel desplegable (oculto por defecto) -->
+            <div id="country-dropdown"
+                 class="hidden absolute top-full left-0 z-50 bg-white shadow-xl rounded-xl
+                        border border-outline-variant max-h-60 overflow-y-auto min-w-[220px] mt-1">
+              <!-- Generado por JS: buildCountryList() -->
+            </div>
+          </div>
+
+          <!-- Número local -->
+          <input class="flex-1 bg-transparent px-4 py-3 font-body-md outline-none"
+                 id="phone_local" placeholder="11 9000-0000" type="tel" required/>
+        </div>
+
+        <!-- Error — igual que antes -->
         <div id="phone-error" class="hidden mt-2 p-3 rounded-xl bg-error-container border border-error/30 flex items-start gap-2">
           <span class="material-symbols-outlined text-error text-sm shrink-0" style="font-variation-settings:'FILL' 1;">gpp_bad</span>
           <div>
             <p class="text-error text-xs font-bold" id="phone-error-title">Número inválido</p>
-            <p class="text-error/80 text-xs" id="phone-error-msg">Ingresa un número con código de país</p>
+            <p class="text-error/80 text-xs" id="phone-error-msg">Ingresa tu número local sin el código de país</p>
           </div>
         </div>
       </div>

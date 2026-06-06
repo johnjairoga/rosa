@@ -4,6 +4,92 @@
 
 const WORKER_URL = 'https://plin-whatsapp-api.criptosintrading.workers.dev';
 
+// ============================================
+// DATOS DE PAÍSES — selector de código
+// ============================================
+
+const COUNTRIES = [
+  { code: '55',  flag: '🇧🇷', name: 'Brasil' },
+  { code: '52',  flag: '🇲🇽', name: 'México' },
+  { code: '54',  flag: '🇦🇷', name: 'Argentina' },
+  { code: '57',  flag: '🇨🇴', name: 'Colombia' },
+  { code: '56',  flag: '🇨🇱', name: 'Chile' },
+  { code: '58',  flag: '🇻🇪', name: 'Venezuela' },
+  { code: '51',  flag: '🇵🇪', name: 'Perú' },
+  { code: '593', flag: '🇪🇨', name: 'Ecuador' },
+  { code: '591', flag: '🇧🇴', name: 'Bolivia' },
+  { code: '595', flag: '🇵🇾', name: 'Paraguay' },
+  { code: '598', flag: '🇺🇾', name: 'Uruguay' },
+  { code: '507', flag: '🇵🇦', name: 'Panamá' },
+  { code: '506', flag: '🇨🇷', name: 'Costa Rica' },
+  { code: '502', flag: '🇬🇹', name: 'Guatemala' },
+  { code: '504', flag: '🇭🇳', name: 'Honduras' },
+  { code: '503', flag: '🇸🇻', name: 'El Salvador' },
+  { code: '505', flag: '🇳🇮', name: 'Nicaragua' },
+  { code: '1',   flag: '🇩🇴', name: 'Rep. Dominicana' },
+  { code: '53',  flag: '🇨🇺', name: 'Cuba' },
+  { code: '1',   flag: '🇺🇸', name: 'EE.UU. / Canadá' },
+  { code: '34',  flag: '🇪🇸', name: 'España' },
+  { code: '351', flag: '🇵🇹', name: 'Portugal' },
+];
+
+let selectedCountry = COUNTRIES[0]; // Brasil por defecto
+
+function buildCountryList() {
+  const dropdown = document.getElementById('country-dropdown');
+  dropdown.innerHTML = COUNTRIES.map((c, i) =>
+    `<button type="button"
+       class="w-full flex items-center gap-3 px-4 py-2 hover:bg-surface-container-highest
+              text-left transition-colors font-body-md"
+       onclick="selectCountry(${i})">
+       <span class="text-lg">${c.flag}</span>
+       <span class="flex-1 text-sm">${c.name}</span>
+       <span class="text-xs text-on-surface-variant">+${c.code}</span>
+     </button>`
+  ).join('');
+}
+
+function selectCountry(index) {
+  selectedCountry = COUNTRIES[index];
+  document.getElementById('selected-flag').textContent = selectedCountry.flag;
+  closeCountryDropdown();
+  document.getElementById('phone_local').focus();
+}
+
+function toggleCountryDropdown(event) {
+  event.stopPropagation();
+  const dd = document.getElementById('country-dropdown');
+  dd.classList.toggle('hidden');
+}
+
+function closeCountryDropdown() {
+  const dd = document.getElementById('country-dropdown');
+  const trigger = document.getElementById('country-trigger');
+  // Solo cerrar si el click fue fuera del selector de país
+  if (dd && !dd.classList.contains('hidden')) {
+    document.addEventListener('click', function closeOnOutsideClick(e) {
+      if (!trigger.contains(e.target) && !dd.contains(e.target)) {
+        dd.classList.add('hidden');
+        document.removeEventListener('click', closeOnOutsideClick);
+      }
+    });
+  }
+}
+
+// Cerrar al hacer clic fuera (inicializar después del DOM)
+document.addEventListener('DOMContentLoaded', () => {
+  const dd = document.getElementById('country-dropdown');
+  document.addEventListener('click', (e) => {
+    const trigger = document.getElementById('country-trigger');
+    if (trigger && !trigger.contains(e.target) && !dd.contains(e.target)) {
+      dd.classList.add('hidden');
+    }
+  });
+});
+
+// Construir lista al cargar
+document.addEventListener('DOMContentLoaded', buildCountryList);
+
 // Estado global en memoria
 const state = {
   gender: null,
@@ -54,7 +140,7 @@ function selectOption(element, gender) {
 
 function isValidWhatsAppNumber(number) {
   const cleaned = number.replace(/[\s\-()]/g, '');
-  return /^(\+)?[\d]{7,}$/.test(cleaned);
+  return /^\+[\d]{10,15}$/.test(cleaned);
 }
 
 // ============================================
@@ -84,12 +170,12 @@ async function handleVerificar(event) {
   event.preventDefault();
 
   const fullNameInput = document.getElementById('full_name');
-  const phoneInput = document.getElementById('phone');
+  const phoneLocalInput = document.getElementById('phone_local');
   const idNumberInput = document.getElementById('id_number');
   const verifyButton = document.getElementById('verify-button');
 
   const name = fullNameInput.value.trim();
-  const phone = phoneInput.value.trim();
+  const localNumber = phoneLocalInput.value.trim();
   const idNumber = idNumberInput.value.trim();
 
   // Validar campos vacíos
@@ -98,8 +184,8 @@ async function handleVerificar(event) {
     return;
   }
 
-  if (!phone) {
-    showFieldError('phone', 'Campo requerido', 'Completa todos los campos para continuar');
+  if (!localNumber) {
+    showFieldError('phone_local', 'Campo requerido', 'Completa todos los campos para continuar');
     return;
   }
 
@@ -108,13 +194,16 @@ async function handleVerificar(event) {
     return;
   }
 
+  // Combinar código de país + número local
+  const phone = `+${selectedCountry.code}${localNumber.replace(/\D/g, '')}`;
+
   // Validar formato de teléfono
   if (!isValidWhatsAppNumber(phone)) {
-    showFieldError('phone', 'Formato inválido', 'Usa el formato +54 9 11 0000-0000');
+    showFieldError('phone_local', 'Número inválido', 'Ingresa tu número local completo sin código de país');
     return;
   }
 
-  clearFieldError('phone');
+  clearFieldError('phone_local');
 
   verifyButton.disabled = true;
   const originalText = verifyButton.innerHTML;
@@ -124,7 +213,7 @@ async function handleVerificar(event) {
     const result = await validateWhatsApp(phone);
 
     if (!result.valid) {
-      showFieldError('phone', 'Número no encontrado', 'Necesitamos un WhatsApp activo para buscarlo. Él no recibirá ningún aviso.');
+      showFieldError('phone_local', 'Número no encontrado', 'Necesitamos un WhatsApp activo para buscarlo. Él no recibirá ningún aviso.');
       verifyButton.disabled = false;
       verifyButton.innerHTML = originalText;
       return;
@@ -140,7 +229,7 @@ async function handleVerificar(event) {
 
   } catch (error) {
     console.error('Error validating:', error);
-    showFieldError('phone', 'Sin conexión', 'No se pudo verificar. Intenta nuevamente');
+    showFieldError('phone_local', 'Sin conexión', 'No se pudo verificar. Intenta nuevamente');
     verifyButton.disabled = false;
     verifyButton.innerHTML = originalText;
   }

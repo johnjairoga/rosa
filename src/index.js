@@ -40,6 +40,9 @@ async function validateWhatsAppNumber(request, env, corsHeaders) {
     }
 
     // Llamar a RapidAPI WhatsappNumberHasItWithToken
+    // RapidAPI espera el número SIN el + inicial
+    const phoneForApi = cleaned.replace(/^\+/, '');
+
     const response = await fetch(
       'https://whatsapp-number-validator3.p.rapidapi.com/WhatsappNumberHasItWithToken',
       {
@@ -49,9 +52,27 @@ async function validateWhatsAppNumber(request, env, corsHeaders) {
           'x-rapidapi-host': 'whatsapp-number-validator3.p.rapidapi.com',
           'x-rapidapi-key': apiKey
         },
-        body: JSON.stringify({ phone_number: cleaned })
+        body: JSON.stringify({ phone_number: phoneForApi })
       }
     );
+
+    // Verificar si la respuesta es JSON válido
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      // RapidAPI devolvió HTML o algo que no es JSON
+      const text = await response.text();
+      console.error('RapidAPI no JSON response:', { status: response.status, body: text.substring(0, 200) });
+      return new Response(
+        JSON.stringify({
+          valid: false,
+          message: 'No se pudo verificar el número. Intenta nuevamente.'
+        }),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        }
+      );
+    }
 
     const data = await response.json();
     console.log('RapidAPI response:', data);
