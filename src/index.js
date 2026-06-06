@@ -259,6 +259,7 @@ export default {
       }
 
       // Obtener foto como ArrayBuffer y convertir a data URL
+      let photoUrl = null;  // Declarar fuera del try para que esté disponible después
       try {
         const imageBuffer = await response.arrayBuffer();
         console.log('[PHOTO] 📦 Got arrayBuffer, size:', imageBuffer.byteLength, 'bytes');
@@ -276,7 +277,7 @@ export default {
         const base64String = btoa(binary);
         console.log('[PHOTO] ✅ Base64 encoded, length:', base64String.length);
 
-        const photoUrl = `data:image/jpeg;base64,${base64String}`;
+        photoUrl = `data:image/jpeg;base64,${base64String}`;  // Asignar a variable declarada arriba
         console.log('[PHOTO] ✅ Photo URL generated, total length:', photoUrl.length);
       } catch (err) {
         console.error('[PHOTO] ❌ Error processing image:', err.message, err.stack);
