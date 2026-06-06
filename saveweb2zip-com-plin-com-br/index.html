@@ -203,67 +203,51 @@
     </button>
   </header>
 
-  <main class="pt-24 pb-stack-lg max-w-7xl mx-auto px-container-margin flex-grow">
-    <section class="flex flex-col lg:flex-row items-center gap-stack-lg mb-stack-lg">
-      <div class="lg:w-1/2 space-y-stack-md text-center lg:text-left">
-        <h1 class="font-headline-xl text-headline-xl text-on-surface leading-tight">
-          Las relaciones de confianza comienzan con <span class="text-primary">información.</span>
-        </h1>
-        <p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg mx-auto lg:mx-0">
-          Descubre los antecedentes de la persona que te interesa de forma rápida, simple y anónima. La seguridad es tu derecho.
-        </p>
+  <main class="pt-24 pb-stack-lg max-w-4xl mx-auto px-container-margin flex-grow">
+    <section class="flex flex-col items-center gap-stack-md text-center">
+      <h1 class="font-headline-xl text-headline-xl text-on-surface leading-tight max-w-2xl">
+        Las relaciones de confianza comienzan con <span class="text-primary">información.</span>
+      </h1>
+      <p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
+        Descubre los antecedentes de la persona que te interesa de forma rápida, simple y anónima. La seguridad es tu derecho.
+      </p>
 
-        <!-- Mini VSL Testimonio -->
-        <div class="glass-card rounded-xl overflow-hidden max-w-lg mx-auto lg:mx-0">
-          <!-- Header del testimonio -->
-          <div class="bg-error-container/30 px-4 py-2 flex items-center gap-2 border-b border-error/20">
-            <span class="material-symbols-outlined text-error text-sm" style="font-variation-settings:'FILL' 1;">warning</span>
-            <span class="text-xs font-semibold text-error">Testimonio real — Historia de sobreviviente</span>
-          </div>
-
-          <!-- Player de video -->
-          <div class="relative bg-black rounded-lg overflow-hidden">
-            <video
-              class="w-full max-h-[280px] object-cover"
-              controls
-              autoplay
-              muted
-              playsinline
-              preload="metadata"
-              controlsList="nodownload nofullscreen"
-            >
-              <source src="https://suhqwgyqfblyeilokryc.supabase.co/storage/v1/object/public/recursos/UCG%20(1).mp4" type="video/mp4" />
-              Tu navegador no soporta videos HTML5.
-            </video>
-          </div>
-
-          <!-- Footer con quote -->
-          <div class="px-4 py-3 bg-surface-container-highest/30">
-            <p class="text-xs text-on-surface-variant text-center italic">
-              "Ojalá hubiera sabido esto antes." — Historia real, identidad protegida
-            </p>
-          </div>
+      <!-- Mini VSL Testimonio — Vertical 9:16 -->
+      <div class="glass-card rounded-xl overflow-hidden w-full max-w-sm">
+        <!-- Header del testimonio -->
+        <div class="bg-error-container/30 px-4 py-2 flex items-center gap-2 border-b border-error/20">
+          <span class="material-symbols-outlined text-error text-sm" style="font-variation-settings:'FILL' 1;">warning</span>
+          <span class="text-xs font-semibold text-error">Testimonio real — Historia de sobreviviente</span>
         </div>
 
-        <button onclick="goToScreen('screen-paso1')" class="bg-primary hover:bg-primary-container text-white px-8 py-4 rounded-full font-label-md text-label-md shadow-lg active:scale-95 flex items-center justify-center gap-2 w-full sm:w-auto mx-auto lg:mx-0">
-          Iniciar Verificación
-          <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">arrow_forward</span>
-        </button>
-      </div>
-      <div class="lg:w-1/2">
-        <div class="glass-card p-4 rounded-3xl overflow-hidden shadow-2xl">
-          <img alt="Comunidad Plinq" class="w-full h-auto rounded-2xl object-cover aspect-square md:aspect-video lg:aspect-square" src="/images/landing-community.jpg"/>
-          <div class="absolute bottom-8 left-8 right-8 glass-card p-4 rounded-2xl shadow-lg flex items-center gap-4">
-            <div class="w-10 h-10 bg-verified-teal rounded-full flex items-center justify-center text-white">
-              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">verified</span>
-            </div>
-            <div>
-              <p class="font-label-md text-label-md text-on-surface">Verificación Segura</p>
-              <p class="text-xs text-on-surface-variant">Datos protegidos por protocolos LGPD</p>
-            </div>
-          </div>
+        <!-- Player de video vertical -->
+        <div class="relative bg-black overflow-hidden aspect-[9/16]">
+          <video
+            class="w-full h-full object-cover"
+            controls
+            autoplay
+            muted
+            playsinline
+            preload="metadata"
+            controlsList="nodownload nofullscreen"
+          >
+            <source src="https://suhqwgyqfblyeilokryc.supabase.co/storage/v1/object/public/recursos/UCG%20(1).mp4" type="video/mp4" />
+            Tu navegador no soporta videos HTML5.
+          </video>
+        </div>
+
+        <!-- Footer con quote -->
+        <div class="px-4 py-3 bg-surface-container-highest/30">
+          <p class="text-xs text-on-surface-variant text-center italic">
+            "Ojalá hubiera sabido esto antes." — Historia real, identidad protegida
+          </p>
         </div>
       </div>
+
+      <button onclick="goToScreen('screen-paso1')" class="bg-primary hover:bg-primary-container text-white px-8 py-4 rounded-full font-label-md text-label-md shadow-lg active:scale-95 flex items-center justify-center gap-2 w-full sm:w-auto">
+        Iniciar Verificación
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">arrow_forward</span>
+      </button>
     </section>
   </main>
 
