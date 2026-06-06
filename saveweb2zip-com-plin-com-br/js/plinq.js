@@ -58,6 +58,25 @@ function isValidWhatsAppNumber(number) {
 }
 
 // ============================================
+// Mostrar errores con animación y styling
+// ============================================
+
+function showFieldError(inputId, title, msg) {
+  const input = document.getElementById(inputId);
+  input.classList.add('input-error', 'input-shake');
+  document.getElementById('phone-error-title').textContent = title;
+  document.getElementById('phone-error-msg').textContent = msg;
+  document.getElementById('phone-error').classList.remove('hidden');
+  setTimeout(() => input.classList.remove('input-shake'), 400);
+  input.focus();
+}
+
+function clearFieldError(inputId) {
+  document.getElementById(inputId)?.classList.remove('input-error', 'input-shake');
+  document.getElementById('phone-error')?.classList.add('hidden');
+}
+
+// ============================================
 // PASO 2: Verificar datos y validar número
 // ============================================
 
@@ -68,25 +87,34 @@ async function handleVerificar(event) {
   const phoneInput = document.getElementById('phone');
   const idNumberInput = document.getElementById('id_number');
   const verifyButton = document.getElementById('verify-button');
-  const phoneError = document.getElementById('phone-error');
 
   const name = fullNameInput.value.trim();
   const phone = phoneInput.value.trim();
   const idNumber = idNumberInput.value.trim();
 
-  if (!name || !phone || !idNumber) {
-    phoneError.textContent = 'Todos los campos son requeridos';
-    phoneError.classList.remove('hidden');
+  // Validar campos vacíos
+  if (!name) {
+    showFieldError('full_name', 'Campo requerido', 'Completa todos los campos para continuar');
     return;
   }
 
+  if (!phone) {
+    showFieldError('phone', 'Campo requerido', 'Completa todos los campos para continuar');
+    return;
+  }
+
+  if (!idNumber) {
+    showFieldError('id_number', 'Campo requerido', 'Completa todos los campos para continuar');
+    return;
+  }
+
+  // Validar formato de teléfono
   if (!isValidWhatsAppNumber(phone)) {
-    phoneError.textContent = 'Formato de teléfono inválido (Ej: +54 9 11 0000-0000)';
-    phoneError.classList.remove('hidden');
+    showFieldError('phone', 'Formato inválido', 'Usa el formato +54 9 11 0000-0000');
     return;
   }
 
-  phoneError.classList.add('hidden');
+  clearFieldError('phone');
 
   verifyButton.disabled = true;
   const originalText = verifyButton.innerHTML;
@@ -96,8 +124,7 @@ async function handleVerificar(event) {
     const result = await validateWhatsApp(phone);
 
     if (!result.valid) {
-      phoneError.textContent = result.message || 'Este número no tiene WhatsApp activo';
-      phoneError.classList.remove('hidden');
+      showFieldError('phone', 'Sin WhatsApp activo', 'Este número no tiene una cuenta de WhatsApp verificada');
       verifyButton.disabled = false;
       verifyButton.innerHTML = originalText;
       return;
@@ -113,8 +140,7 @@ async function handleVerificar(event) {
 
   } catch (error) {
     console.error('Error validating:', error);
-    phoneError.textContent = 'Error en la validación. Intenta nuevamente.';
-    phoneError.classList.remove('hidden');
+    showFieldError('phone', 'Sin conexión', 'No se pudo verificar. Intenta nuevamente');
     verifyButton.disabled = false;
     verifyButton.innerHTML = originalText;
   }

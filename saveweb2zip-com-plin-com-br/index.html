@@ -173,6 +173,17 @@
                   radial-gradient(circle at bottom right, #e8ddff 0%, #f8f9ff 40%);
       background-attachment: fixed;
     }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+
+    .input-shake { animation: shake 0.35s ease-in-out; }
+    .input-error { border-color: #ba1a1a !important; box-shadow: 0 0 0 1px #ba1a1a !important; }
   </style>
 </head>
 
@@ -330,7 +341,7 @@
     </div>
   </header>
 
-  <main class="mt-16 w-full max-w-2xl px-container-margin py-stack-lg flex-grow flex flex-col">
+  <main class="mt-16 w-full max-w-2xl mx-auto px-container-margin py-stack-lg flex-grow flex flex-col">
     <div class="mb-stack-lg">
       <div class="flex justify-between items-end mb-2">
         <span class="font-label-md text-label-md text-primary">Paso 2 de 4</span>
@@ -356,8 +367,14 @@
 
       <div class="space-y-2">
         <label class="font-label-md text-label-md text-on-surface-variant" for="phone">Número de Teléfono WhatsApp</label>
-        <input class="w-full bg-white/50 border border-outline-variant focus:border-secondary focus:ring-1 focus:ring-secondary rounded-lg px-4 py-3 font-body-md" id="phone" placeholder="+54 9 11 0000-0000" type="tel" required/>
-        <div id="phone-error" class="text-error text-xs hidden"></div>
+        <input class="w-full bg-white/50 border border-outline-variant focus:border-secondary focus:ring-1 focus:ring-secondary rounded-lg px-4 py-3 font-body-md transition-colors" id="phone" placeholder="+54 9 11 0000-0000" type="tel" required/>
+        <div id="phone-error" class="hidden mt-2 p-3 rounded-xl bg-error-container border border-error/30 flex items-start gap-2">
+          <span class="material-symbols-outlined text-error text-sm shrink-0" style="font-variation-settings:'FILL' 1;">gpp_bad</span>
+          <div>
+            <p class="text-error text-xs font-bold" id="phone-error-title">Número inválido</p>
+            <p class="text-error/80 text-xs" id="phone-error-msg">Ingresa un número con código de país</p>
+          </div>
+        </div>
       </div>
 
       <div class="space-y-2">
@@ -365,29 +382,17 @@
         <input class="w-full bg-white/50 border border-outline-variant focus:border-secondary focus:ring-1 focus:ring-secondary rounded-lg px-4 py-3 font-body-md" id="id_number" placeholder="Ej: 12345678" type="text" required/>
       </div>
 
-      <div class="flex items-start gap-3 p-4 bg-surface-container-low rounded-lg border border-outline-variant/30">
-        <span class="material-symbols-outlined text-verified-teal" style="font-variation-settings: 'FILL' 1;">verified_user</span>
-        <p class="font-label-md text-[13px] text-on-surface-variant"><strong class="text-on-surface">Privacidad Garantizada:</strong> Datos protegidos bajo LGPD. No será notificado.</p>
-      </div>
-
       <button type="submit" class="w-full bg-gradient-to-r from-primary to-safety-xp text-on-primary py-4 rounded-full font-label-md shadow-lg" id="verify-button">
         <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">lock</span>
         Verificar Datos
       </button>
+
+      <p class="text-[13px] text-on-surface-variant text-center">Datos protegidos bajo LGPD. No será notificado.</p>
     </form>
-
-    <div class="mt-stack-md self-center glass-card rounded-full px-4 py-2 flex items-center gap-2">
-      <span class="material-symbols-outlined text-mission-gold" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
-      <span class="font-label-md text-label-md text-on-surface">¡Gana <span class="text-primary">+50 XP</span> al completar!</span>
-    </div>
-
-    <div class="mt-stack-lg rounded-2xl overflow-hidden aspect-[16/9]">
-      <img alt="Mujer con tablet" class="w-full h-full object-cover" src="/images/paso2-trust.jpg"/>
-    </div>
   </main>
 
   <footer class="w-full py-stack-lg border-t border-outline-variant/30 bg-surface-container-lowest">
-    <div class="text-center md:text-left">
+    <div class="flex flex-col md:flex-row justify-between items-center px-container-margin max-w-7xl mx-auto gap-gutter">
       <span class="font-xp-display text-xp-display text-primary">Plinq</span>
       <p class="font-label-md text-label-md text-on-surface-variant">© 2024 Plinq Safety. Empowering through resilience.</p>
     </div>
@@ -402,6 +407,7 @@
   </header>
 
   <main class="flex-grow flex flex-col items-center justify-center pt-16 px-container-margin relative flex-1">
+    <section class="max-w-xl w-full flex flex-col items-center">
     <div class="relative w-48 h-48 mb-stack-lg flex items-center justify-center">
       <div class="absolute inset-0 bg-primary/20 rounded-full pulse-animation"></div>
       <div class="absolute inset-4 bg-secondary/20 rounded-full pulse-animation" style="animation-delay: 1s;"></div>
@@ -428,6 +434,7 @@
         <div class="h-full bg-gradient-to-r from-primary to-safety-xp" id="procesando-progress-bar" style="width: 90%;"></div>
       </div>
     </div>
+    </section>
   </main>
 
   <footer class="w-full py-stack-lg border-t border-outline-variant/30 bg-surface-container-lowest">
