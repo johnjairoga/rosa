@@ -240,18 +240,32 @@ export default {
       }
 
       // Obtener foto como ArrayBuffer y convertir a data URL
-      const imageBuffer = await response.arrayBuffer();
-      const uint8Array = new Uint8Array(imageBuffer);
-      console.log('[PHOTO] 📦 Image size:', uint8Array.byteLength, 'bytes');
+      try {
+        const imageBuffer = await response.arrayBuffer();
+        console.log('[PHOTO] 📦 Got arrayBuffer, size:', imageBuffer.byteLength, 'bytes');
 
-      // Convertir a base64 sin usar apply (evita límite de argumentos en imágenes grandes)
-      let binary = '';
-      for (let i = 0; i < uint8Array.byteLength; i++) {
-        binary += String.fromCharCode(uint8Array[i]);
+        const uint8Array = new Uint8Array(imageBuffer);
+        console.log('[PHOTO] 📦 Created uint8Array, length:', uint8Array.byteLength);
+
+        // Convertir a base64 sin usar apply (evita límite de argumentos en imágenes grandes)
+        let binary = '';
+        for (let i = 0; i < uint8Array.byteLength; i++) {
+          binary += String.fromCharCode(uint8Array[i]);
+        }
+        console.log('[PHOTO] 🔄 Converted to binary string, length:', binary.length);
+
+        const base64String = btoa(binary);
+        console.log('[PHOTO] ✅ Base64 encoded, length:', base64String.length);
+
+        const photoUrl = `data:image/jpeg;base64,${base64String}`;
+        console.log('[PHOTO] ✅ Photo URL generated, total length:', photoUrl.length);
+      } catch (err) {
+        console.error('[PHOTO] ❌ Error processing image:', err.message, err.stack);
+        return new Response(JSON.stringify({ photoUrl: null }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        });
       }
-      const base64String = btoa(binary);
-      const photoUrl = `data:image/jpeg;base64,${base64String}`;
-      console.log('[PHOTO] ✅ Photo URL generated, length:', photoUrl.length);
 
       return new Response(JSON.stringify({ photoUrl }), {
         status: 200,
