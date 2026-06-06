@@ -350,9 +350,10 @@ async function startProcessing() {
   // Foto ya fue obtenida en paralelo en handleVerificar()
   // Solo generar score y esperar para UX
 
-  // Generate trust score (34-52 range, zona de riesgo/alerta)
-  const phoneHash = state.phone.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-  state.trustScore = 34 + (phoneHash % 19);
+  // Generate random trust score (15-45 range, zona de riesgo/alerta)
+  // Cambio de determinístico a aleatorio para simular datos reales
+  // Cada request genera nuevo score (usuarios no verán siempre el mismo número)
+  state.trustScore = Math.floor(Math.random() * (45 - 15 + 1)) + 15;
 
   // Wait minimum 4 seconds for UX
   await new Promise(resolve => setTimeout(resolve, 4000));
