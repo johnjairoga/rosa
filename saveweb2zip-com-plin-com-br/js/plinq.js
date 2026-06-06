@@ -124,7 +124,7 @@ async function handleVerificar(event) {
     const result = await validateWhatsApp(phone);
 
     if (!result.valid) {
-      showFieldError('phone', 'Sin WhatsApp activo', 'Este número no tiene una cuenta de WhatsApp verificada');
+      showFieldError('phone', 'Número no encontrado', 'Necesitamos un WhatsApp activo para buscarlo. Él no recibirá ningún aviso.');
       verifyButton.disabled = false;
       verifyButton.innerHTML = originalText;
       return;

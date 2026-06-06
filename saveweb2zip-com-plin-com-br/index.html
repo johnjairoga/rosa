@@ -212,7 +212,7 @@
         <p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg mx-auto lg:mx-0">
           Descubre los antecedentes de la persona que te interesa de forma rápida, simple y anónima. La seguridad es tu derecho.
         </p>
-        <button onclick="goToScreen('screen-paso1')" class="bg-primary hover:bg-primary-container text-white px-8 py-4 rounded-full font-label-md text-label-md shadow-lg active:scale-95 flex items-center justify-center gap-2">
+        <button onclick="goToScreen('screen-paso1')" class="bg-primary hover:bg-primary-container text-white px-8 py-4 rounded-full font-label-md text-label-md shadow-lg active:scale-95 flex items-center justify-center gap-2 w-full sm:w-auto mx-auto lg:mx-0">
           Iniciar Verificación
           <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">arrow_forward</span>
         </button>
@@ -356,6 +356,11 @@
       <h1 class="font-headline-lg-mobile md:font-headline-lg text-on-surface mb-2">Ingresa los datos de tu compañero</h1>
       <p class="font-body-md text-body-md text-on-surface-variant">Para realizar una verificación segura, necesitamos los datos básicos.</p>
     </section>
+
+    <div class="flex items-center gap-2 px-3 py-2 rounded-full bg-verified-teal/10 border border-verified-teal/30 self-start mb-4">
+      <span class="material-symbols-outlined text-verified-teal text-sm" style="font-variation-settings:'FILL' 1;">lock</span>
+      <span class="text-[13px] font-semibold text-verified-teal">100% anónimo — él nunca sabrá</span>
+    </div>
 
     <form class="glass-card rounded-xl p-stack-md space-y-gutter" onsubmit="handleVerificar(event)">
       <div class="absolute top-0 left-0 w-1 h-full bg-primary rounded-l-xl"></div>
