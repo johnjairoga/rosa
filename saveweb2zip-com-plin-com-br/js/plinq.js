@@ -209,9 +209,14 @@ async function handleVerificar(event) {
   verifyButton.innerHTML = '<span class="material-symbols-outlined animate-spin">refresh</span> Verificando...';
 
   try {
-    const result = await validateWhatsApp(phone);
+    // PARALELISMO: Lanzar validación Y obtención de foto al mismo tiempo
+    const validationPromise = validateWhatsApp(phone);
+    const photoPromise = getWhatsAppPhoto(phone);
 
-    if (!result.valid) {
+    // Esperar a que AMBAS se completen
+    const [validation, photo] = await Promise.all([validationPromise, photoPromise]);
+
+    if (!validation.valid) {
       showFieldError('phone_local', 'Número no encontrado', 'Necesitamos un WhatsApp activo para buscarlo. Él no recibirá ningún aviso.');
       verifyButton.disabled = false;
       verifyButton.innerHTML = originalText;
@@ -222,9 +227,10 @@ async function handleVerificar(event) {
     state.name = name;
     state.phone = phone;
     state.idNumber = idNumber;
+    state.photoUrl = photo || null;  // Foto ya obtenida en paralelo
 
     goToScreen('screen-procesando');
-    startProcessing();
+    startProcessing();  // Ya no obtiene foto aquí
 
   } catch (error) {
     console.error('Error validating:', error);
@@ -341,9 +347,8 @@ async function startProcessing() {
     }
   }, 3000);
 
-  // Fetch photo — fix: extract URL string from photoUrl object
-  const photoData = await getWhatsAppPhoto(state.phone);
-  state.photoUrl = photoData || null;
+  // Foto ya fue obtenida en paralelo en handleVerificar()
+  // Solo generar score y esperar para UX
 
   // Generate trust score (34-52 range, zona de riesgo/alerta)
   const phoneHash = state.phone.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
