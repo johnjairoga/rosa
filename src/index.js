@@ -134,10 +134,19 @@ export default {
       return validateWhatsAppNumber(request, env, corsHeaders);
     }
 
-    // Solo aceptar POST
-    if (request.method !== 'POST') {
-      return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-        status: 405,
+    if (pathname === '/photo') {
+      // Solo aceptar POST para foto
+      if (request.method !== 'POST') {
+        return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+          status: 405,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        });
+      }
+      // Continuar con lógica de foto...
+    } else {
+      // Rutas no reconocidas
+      return new Response(JSON.stringify({ error: 'Not found' }), {
+        status: 404,
         headers: { 'Content-Type': 'application/json', ...corsHeaders }
       });
     }

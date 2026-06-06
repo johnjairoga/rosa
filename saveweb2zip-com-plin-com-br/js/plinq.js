@@ -280,7 +280,7 @@ async function getWhatsAppPhoto(number) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 12000);
 
-    const response = await fetch(`${WORKER_URL}/`, {
+    const response = await fetch(`${WORKER_URL}/photo`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
