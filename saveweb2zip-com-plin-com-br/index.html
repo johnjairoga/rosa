@@ -511,7 +511,19 @@
       <p class="font-body-md text-on-surface-variant">Análisis detallado de seguridad para tu tranquilidad.</p>
     </section>
 
-    <div class="flex flex-col-reverse md:grid md:grid-cols-2 gap-gutter">
+    <!-- Header foto perfil — prominente -->
+    <div class="relative glass-card rounded-xl overflow-hidden mb-stack-md">
+      <img id="result-profile-photo"
+           src="/images/avatar-placeholder.png"
+           alt="Foto"
+           class="w-full h-48 object-cover object-top" />
+      <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+        <h3 class="font-headline-md text-white" id="result-name">—</h3>
+        <p class="text-xs text-orange-300 font-semibold">⚠️ Verificada recientemente</p>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-gutter">
       <!-- Score ring card — WARNING/ALERT style -->
       <div class="glass-card rounded-xl p-stack-md flex flex-col items-center justify-center space-y-stack-sm relative border-2 border-orange-300">
         <div class="absolute top-2 right-2 px-3 py-1 bg-orange-100 text-orange-600 rounded-full text-xs font-bold flex items-center gap-1 animate-pulse">
@@ -537,16 +549,8 @@
         <p class="text-center font-body-md font-semibold text-error">Actividad Sospechosa Detectada</p>
       </div>
 
-      <!-- Profile card — ALERT badges -->
+      <!-- Alert badges -->
       <div class="glass-card rounded-xl p-stack-md flex flex-col justify-center space-y-stack-sm border-2 border-orange-300">
-        <div class="flex items-center gap-gutter">
-          <img class="w-16 h-16 rounded-full object-cover border-2 border-white shadow-sm" id="result-profile-photo" src="/images/avatar-placeholder.png" alt="Foto"/>
-          <div>
-            <h3 class="font-headline-md text-headline-md" id="result-name">Mariana C.</h3>
-            <p class="font-label-md text-label-md text-orange-600 font-semibold">⚠️ Verificada recientemente</p>
-          </div>
-        </div>
-        <hr class="border-outline-variant/30"/>
         <div class="space-y-2">
           <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-error">gpp_bad</span>
@@ -606,7 +610,10 @@
               <p class="font-label-md text-label-md text-error font-semibold">Datos comprometedores encontrados</p>
             </div>
           </div>
-          <span class="material-symbols-outlined text-xl text-error animate-pulse">lock_alert</span>
+          <button onclick="openPaymentModal()"
+                  class="text-xs font-bold text-white bg-error px-3 py-1.5 rounded-lg shrink-0 animate-pulse hover:bg-red-700">
+            Saber más
+          </button>
         </div>
 
         <div class="glass-card rounded-xl p-gutter flex items-center justify-between border-l-4 border-error bg-error-container/10 relative">
@@ -620,44 +627,44 @@
               <p class="font-label-md text-label-md text-error font-semibold">Datos comprometedores encontrados</p>
             </div>
           </div>
-          <span class="material-symbols-outlined text-xl text-error animate-pulse">lock_alert</span>
+          <button onclick="openPaymentModal()"
+                  class="text-xs font-bold text-white bg-error px-3 py-1.5 rounded-lg shrink-0 animate-pulse hover:bg-red-700">
+            Saber más
+          </button>
         </div>
       </div>
     </section>
 
-    <button class="w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-4 px-6 rounded-xl font-headline-md shadow-lg animate-pulse flex items-center justify-center gap-2 border-2 border-red-500">
-      <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">lock_open</span>
-      🔓 VER QUÉ ENCONTRAMOS — $4.99
-    </button>
-    <p class="text-center text-xs text-error font-semibold">⚠️ Este perfil tiene información crítica oculta</p>
-
-    <section class="glass-card rounded-xl p-stack-md bg-error-container/20 border-2 border-error/30">
-      <div class="flex items-start gap-gutter">
-        <span class="material-symbols-outlined text-error animate-pulse">warning</span>
-        <div>
-          <h5 class="font-headline-md text-body-md font-bold text-error mb-1">Alerta de Seguridad</h5>
-          <p class="font-body-md text-on-surface">Detectamos señales de alerta en este perfil. Existe información crítica que necesitas conocer antes de continuar esta relación. No te arriesgues — desbloquea el informe completo ahora y conoce todos los detalles.</p>
-        </div>
-      </div>
-    </section>
-
-    <div class="flex flex-col gap-gutter pt-stack-sm">
-      <button class="w-full bg-primary text-white py-4 rounded-xl font-headline-md shadow-lg">
-        Ver Reporte Completo
-        <span class="material-symbols-outlined">arrow_forward</span>
-      </button>
-      <button class="w-full bg-white text-on-surface py-4 rounded-xl font-headline-md border border-outline-variant">
-        <span class="material-symbols-outlined">ios_share</span>
-        Compartir con un contacto
-      </button>
-    </div>
-
-    <div class="py-stack-md text-center">
-      <p class="italic text-on-surface-variant font-body-md px-10">
-        "La seguridad no es un lujo, es el derecho de toda mujer a vivir con paz mental."
-      </p>
-    </div>
   </main>
+
+  <!-- Modal de pago — placeholder visual -->
+  <div id="payment-modal" class="hidden fixed inset-0 bg-black/70 z-50 flex items-end sm:items-center justify-center p-4">
+    <div class="glass-card w-full max-w-md rounded-2xl p-stack-md space-y-stack-md">
+      <div class="flex items-center justify-between">
+        <h3 class="font-headline-md text-on-surface">Desbloquear Informe Completo</h3>
+        <button onclick="closePaymentModal()" class="p-2 rounded-full hover:bg-surface-container-highest">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="bg-error-container/20 rounded-xl p-4 text-center border border-error/30">
+        <p class="text-3xl font-bold text-error">$4.99</p>
+        <p class="text-xs text-on-surface-variant mt-1">Acceso inmediato al informe completo</p>
+      </div>
+      <ul class="space-y-2 text-sm text-on-surface-variant">
+        <li class="flex items-center gap-2"><span class="material-symbols-outlined text-error text-sm" style="font-variation-settings:'FILL' 1;">check_circle</span> Antecedentes criminales completos</li>
+        <li class="flex items-center gap-2"><span class="material-symbols-outlined text-error text-sm" style="font-variation-settings:'FILL' 1;">check_circle</span> Huella digital y redes sociales</li>
+        <li class="flex items-center gap-2"><span class="material-symbols-outlined text-error text-sm" style="font-variation-settings:'FILL' 1;">check_circle</span> Identidad verificada completa</li>
+      </ul>
+      <div id="payment-method-container" class="min-h-[60px] flex items-center justify-center bg-surface-container-highest/30 rounded-xl">
+        <p class="text-xs text-on-surface-variant">Método de pago próximamente</p>
+      </div>
+      <button class="w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-4 rounded-xl font-headline-md shadow-lg flex items-center justify-center gap-2 animate-pulse">
+        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">lock_open</span>
+        Ver Informe Completo — $4.99
+      </button>
+      <p class="text-center text-xs text-on-surface-variant">🔒 Pago 100% seguro</p>
+    </div>
+  </div>
 
   <footer class="w-full py-stack-lg bg-surface-container-lowest border-t border-outline-variant/30">
     <div class="flex flex-col md:flex-row justify-between items-center px-container-margin max-w-7xl mx-auto gap-gutter">

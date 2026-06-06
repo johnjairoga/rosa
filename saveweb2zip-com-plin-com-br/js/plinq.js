@@ -393,6 +393,30 @@ function populateResults() {
 }
 
 // ============================================
+// Modal de Pago
+// ============================================
+
+function openPaymentModal() {
+  document.getElementById('payment-modal').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePaymentModal() {
+  document.getElementById('payment-modal').classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+// Cerrar modal al click en backdrop
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('payment-modal');
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closePaymentModal();
+    });
+  }
+});
+
+// ============================================
 // Inicialización
 // ============================================
 
