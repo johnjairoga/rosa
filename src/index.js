@@ -185,11 +185,11 @@ export default {
         }
       }
 
-      const apiKey = env.RAPIDAPI_KEY;
+      const apiKey = env.RAPIDAPI_KEY_PHOTO;
 
       if (!apiKey) {
-        return new Response(JSON.stringify({ error: 'API configuration error' }), {
-          status: 500,
+        return new Response(JSON.stringify({ photoUrl: null }), {
+          status: 200,
           headers: { 'Content-Type': 'application/json', ...corsHeaders }
         });
       }
@@ -235,7 +235,13 @@ export default {
       // Obtener foto como ArrayBuffer y convertir a data URL
       const imageBuffer = await response.arrayBuffer();
       const uint8Array = new Uint8Array(imageBuffer);
-      const base64String = btoa(String.fromCharCode.apply(null, uint8Array));
+
+      // Convertir a base64 sin usar apply (evita límite de argumentos en imágenes grandes)
+      let binary = '';
+      for (let i = 0; i < uint8Array.byteLength; i++) {
+        binary += String.fromCharCode(uint8Array[i]);
+      }
+      const base64String = btoa(binary);
       const photoUrl = `data:image/jpeg;base64,${base64String}`;
 
       return new Response(JSON.stringify({ photoUrl }), {
