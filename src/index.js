@@ -232,10 +232,13 @@ export default {
         });
       }
 
-      // Obtener URL de foto
-      const photoUrl = await response.text();
+      // Obtener foto como ArrayBuffer y convertir a data URL
+      const imageBuffer = await response.arrayBuffer();
+      const uint8Array = new Uint8Array(imageBuffer);
+      const base64String = btoa(String.fromCharCode.apply(null, uint8Array));
+      const photoUrl = `data:image/jpeg;base64,${base64String}`;
 
-      return new Response(JSON.stringify({ photoUrl: photoUrl || null }), {
+      return new Response(JSON.stringify({ photoUrl }), {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
