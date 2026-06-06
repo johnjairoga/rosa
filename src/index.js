@@ -188,6 +188,7 @@ export default {
       const apiKey = env.RAPIDAPI_KEY_PHOTO;
 
       if (!apiKey) {
+        console.log('[PHOTO] ❌ API key not found: RAPIDAPI_KEY_PHOTO');
         return new Response(JSON.stringify({ photoUrl: null }), {
           status: 200,
           headers: { 'Content-Type': 'application/json', ...corsHeaders }
@@ -196,6 +197,7 @@ export default {
 
       // Limpiar número
       const cleanNumber = number.replace(/\D/g, '');
+      console.log('[PHOTO] 📱 Phone:', cleanNumber, '| API Key exists:', !!apiKey);
 
       // Llamar a RapidAPI
       const response = await fetch(
@@ -210,8 +212,11 @@ export default {
         }
       );
 
+      console.log('[PHOTO] 🔗 RapidAPI Response Status:', response.status);
+
       // Si 404 = sin foto
       if (response.status === 404) {
+        console.log('[PHOTO] 🚫 Photo not found (404)');
         return new Response(JSON.stringify({ photoUrl: null }), {
           status: 200,
           headers: {
@@ -223,6 +228,8 @@ export default {
 
       // Si error
       if (!response.ok) {
+        const errorText = await response.text();
+        console.log('[PHOTO] ❌ API Error:', response.status, '|', errorText.substring(0, 200));
         return new Response(JSON.stringify({ photoUrl: null }), {
           status: 200,
           headers: {
@@ -235,6 +242,7 @@ export default {
       // Obtener foto como ArrayBuffer y convertir a data URL
       const imageBuffer = await response.arrayBuffer();
       const uint8Array = new Uint8Array(imageBuffer);
+      console.log('[PHOTO] 📦 Image size:', uint8Array.byteLength, 'bytes');
 
       // Convertir a base64 sin usar apply (evita límite de argumentos en imágenes grandes)
       let binary = '';
@@ -243,6 +251,7 @@ export default {
       }
       const base64String = btoa(binary);
       const photoUrl = `data:image/jpeg;base64,${base64String}`;
+      console.log('[PHOTO] ✅ Photo URL generated, length:', photoUrl.length);
 
       return new Response(JSON.stringify({ photoUrl }), {
         status: 200,
