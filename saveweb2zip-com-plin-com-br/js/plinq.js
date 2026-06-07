@@ -5,6 +5,58 @@
 const WORKER_URL = 'https://plin-whatsapp-api.criptosintrading.workers.dev';
 
 // ============================================
+// STRIPE — Método de Pago (on-site)
+// ============================================
+
+function openPaymentModal() {
+  document.getElementById('payment-modal').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+async function handlePayment() {
+  const button = document.getElementById('pay-button');
+  const buttonText = document.getElementById('pay-button-text');
+  const errorEl = document.getElementById('payment-errors');
+
+  button.disabled = true;
+  buttonText.textContent = 'Redirigiendo...';
+  errorEl.classList.add('hidden');
+
+  try {
+    const response = await fetch(`${WORKER_URL}/create-checkout-session`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({})
+    });
+
+    const { sessionUrl, error } = await response.json();
+
+    if (error) throw new Error(error);
+
+    window.location.href = sessionUrl;
+
+  } catch (err) {
+    errorEl.textContent = 'Error al procesar. Intenta nuevamente.';
+    errorEl.classList.remove('hidden');
+    button.disabled = false;
+    buttonText.textContent = 'Ver Informe Completo — $4.99';
+  }
+}
+
+function closePaymentSuccess() {
+  document.getElementById('payment-success').classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+// Detectar regreso de Stripe con ?payment=success
+document.addEventListener('DOMContentLoaded', () => {
+  if (new URLSearchParams(window.location.search).get('payment') === 'success') {
+    document.getElementById('payment-success').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+});
+
+// ============================================
 // DATOS DE PAÍSES — selector de código
 // ============================================
 

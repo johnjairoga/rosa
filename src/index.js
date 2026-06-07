@@ -1,6 +1,5 @@
 /**
- * Cloudflare Worker — API WhatsApp Photo
- * Obtiene foto de perfil de WhatsApp vía RapidAPI
+ * Cloudflare Worker — API WhatsApp + Stripe Payment
  */
 
 // Validar número de WhatsApp
@@ -22,7 +21,6 @@ async function validateWhatsAppNumber(request, env, corsHeaders) {
       });
     }
 
-    // Validar formato (debe ser solo dígitos, 10-15 caracteres)
     const cleaned = number.replace(/\D/g, '');
     if (!cleaned.match(/^\d{10,15}$/)) {
       return new Response(JSON.stringify({ valid: false, message: 'Formato inválido' }), {
@@ -31,7 +29,6 @@ async function validateWhatsAppNumber(request, env, corsHeaders) {
       });
     }
 
-    // Lee la clave y limpia BOM si existe
     let apiKey = env.RAPIDAPI_KEY;
     if (apiKey) {
       apiKey = apiKey.replace(/^﻿/, '').trim();
@@ -44,8 +41,6 @@ async function validateWhatsAppNumber(request, env, corsHeaders) {
       });
     }
 
-    // Llamar a RapidAPI WhatsappNumberHasItWithToken
-    // cleaned ya contiene solo dígitos (558296771065)
     console.log('Sending to RapidAPI:', {
       phone_number: cleaned,
       apiKeyExists: !!apiKey
@@ -66,10 +61,8 @@ async function validateWhatsAppNumber(request, env, corsHeaders) {
 
     console.log('RapidAPI response status:', response.status);
 
-    // Verificar si la respuesta es JSON válido
     const contentType = response.headers.get('content-type');
     if (!contentType || !contentType.includes('application/json')) {
-      // RapidAPI devolvió HTML o algo que no es JSON
       const text = await response.text();
       console.error('RapidAPI no JSON response:', { status: response.status, body: text.substring(0, 200) });
       return new Response(
@@ -87,8 +80,6 @@ async function validateWhatsAppNumber(request, env, corsHeaders) {
     const data = await response.json();
     console.log('RapidAPI response:', data);
 
-    // Manejar respuesta de RapidAPI
-    // El endpoint retorna { status: "valid" } o { status: "invalid" }
     const isValid = data.status === 'valid' || data.has_whatsapp === true;
 
     return new Response(
@@ -113,20 +104,76 @@ async function validateWhatsAppNumber(request, env, corsHeaders) {
   }
 }
 
+// Crear Checkout Session para Stripe (redirect a página hosted de Stripe)
+async function createCheckoutSession(request, env, corsHeaders) {
+  if (request.method !== 'POST') {
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+      status: 405,
+      headers: { 'Content-Type': 'application/json', ...corsHeaders }
+    });
+  }
+
+  try {
+    let stripeKey = env.STRIPE_SECRET_KEY;
+    if (stripeKey) {
+      stripeKey = stripeKey.replace(/^﻿/, '').trim();
+    }
+
+    if (!stripeKey) {
+      return new Response(JSON.stringify({ error: 'Payment not configured' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders }
+      });
+    }
+
+    const stripeResponse = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${stripeKey}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        'line_items[0][price]': 'price_1TfVazRvkkVXF3ypeEBVYEU8',
+        'line_items[0][quantity]': '1',
+        mode: 'payment',
+        success_url: 'https://rosa-a5l.pages.dev/?payment=success',
+        cancel_url: 'https://rosa-a5l.pages.dev/',
+      }).toString()
+    });
+
+    const session = await stripeResponse.json();
+
+    if (session.error) {
+      return new Response(JSON.stringify({ error: session.error.message }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders }
+      });
+    }
+
+    return new Response(JSON.stringify({ sessionUrl: session.url }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json', ...corsHeaders }
+    });
+
+  } catch (err) {
+    return new Response(JSON.stringify({ error: 'Checkout error: ' + err.message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json', ...corsHeaders }
+    });
+  }
+}
+
 export default {
   async fetch(request, env) {
-    // CORS headers
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type'
     };
 
-    // Obtener pathname
     const url = new URL(request.url);
     const pathname = url.pathname;
 
-    // Manejar preflight CORS
     if (request.method === 'OPTIONS') {
       return new Response(null, {
         status: 200,
@@ -134,173 +181,151 @@ export default {
       });
     }
 
-    // Router: decidir qué handler ejecutar
     if (pathname === '/validate') {
       return validateWhatsAppNumber(request, env, corsHeaders);
     }
 
+    if (pathname === '/create-checkout-session') {
+      return createCheckoutSession(request, env, corsHeaders);
+    }
+
     if (pathname === '/photo') {
-      // Solo aceptar POST para foto
       if (request.method !== 'POST') {
         return new Response(JSON.stringify({ error: 'Method not allowed' }), {
           status: 405,
           headers: { 'Content-Type': 'application/json', ...corsHeaders }
         });
       }
-      // Continuar con lógica de foto...
-    } else {
-      // Rutas no reconocidas
-      return new Response(JSON.stringify({ error: 'Not found' }), {
-        status: 404,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders }
-      });
-    }
 
-    try {
-      // Parsear request
-      let body;
       try {
-        body = await request.json();
-      } catch (e) {
-        return new Response(JSON.stringify({ error: 'Invalid JSON' }), {
-          status: 400,
-          headers: { 'Content-Type': 'application/json', ...corsHeaders }
-        });
-      }
+        const { number } = await request.json();
 
-      const { number } = body;
-
-      if (!number) {
-        return new Response(JSON.stringify({ error: 'number is required' }), {
-          status: 400,
-          headers: { 'Content-Type': 'application/json', ...corsHeaders }
-        });
-      }
-
-      // Validar formato de número
-      const cleaned = number.replace(/[\s\-()]/g, '');
-
-      // Debe ser solo números y opcionalmente +
-      if (!cleaned.match(/^(\+)?[\d]{7,}$/)) {
-        return new Response(JSON.stringify({ error: 'invalid number format' }), {
-          status: 400,
-          headers: { 'Content-Type': 'application/json', ...corsHeaders }
-        });
-      }
-
-      // Si tiene +, debe tener 10-15 dígitos
-      if (cleaned.startsWith('+')) {
-        const digits = cleaned.slice(1);
-        if (digits.length < 10 || digits.length > 15) {
-          return new Response(JSON.stringify({ error: 'invalid number length' }), {
+        if (!number) {
+          return new Response(JSON.stringify({ error: 'number is required' }), {
             status: 400,
             headers: { 'Content-Type': 'application/json', ...corsHeaders }
           });
         }
-      }
 
-      // Lee la clave y limpia BOM si existe
-      let apiKey = env.RAPIDAPI_KEY_PHOTO;
-      if (apiKey) {
-        // Eliminar BOM UTF-8 (caracteres ﻿) si está presente
-        apiKey = apiKey.replace(/^﻿/, '').trim();
-      }
+        const cleaned = number.replace(/[\s\-()]/g, '');
 
-      if (!apiKey) {
-        console.log('[PHOTO] ❌ API key not found: RAPIDAPI_KEY_PHOTO');
-        return new Response(JSON.stringify({ photoUrl: null }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json', ...corsHeaders }
-        });
-      }
+        if (!cleaned.match(/^(\+)?[\d]{7,}$/)) {
+          return new Response(JSON.stringify({ error: 'invalid number format' }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json', ...corsHeaders }
+          });
+        }
 
-      // Limpiar número
-      const cleanNumber = number.replace(/\D/g, '');
-      console.log('[PHOTO] 📱 Phone:', cleanNumber, '| API Key exists:', !!apiKey);
-
-      // Llamar a RapidAPI
-      const response = await fetch(
-        `https://whatsapp-data1.p.rapidapi.com/picture/${cleanNumber}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-rapidapi-host': 'whatsapp-data1.p.rapidapi.com',
-            'x-rapidapi-key': apiKey
+        if (cleaned.startsWith('+')) {
+          const digits = cleaned.slice(1);
+          if (digits.length < 10 || digits.length > 15) {
+            return new Response(JSON.stringify({ error: 'invalid number length' }), {
+              status: 400,
+              headers: { 'Content-Type': 'application/json', ...corsHeaders }
+            });
           }
         }
-      );
 
-      console.log('[PHOTO] 🔗 RapidAPI Response Status:', response.status);
+        let apiKey = env.RAPIDAPI_KEY_PHOTO;
+        if (apiKey) {
+          apiKey = apiKey.replace(/^﻿/, '').trim();
+        }
 
-      // Si 404 = sin foto
-      if (response.status === 404) {
-        console.log('[PHOTO] 🚫 Photo not found (404)');
-        return new Response(JSON.stringify({ photoUrl: null }), {
+        if (!apiKey) {
+          console.log('[PHOTO] ❌ API key not found: RAPIDAPI_KEY_PHOTO');
+          return new Response(JSON.stringify({ photoUrl: null }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json', ...corsHeaders }
+          });
+        }
+
+        const cleanNumber = number.replace(/\D/g, '');
+        console.log('[PHOTO] 📱 Phone:', cleanNumber, '| API Key exists:', !!apiKey);
+
+        const response = await fetch(
+          `https://whatsapp-data1.p.rapidapi.com/picture/${cleanNumber}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-rapidapi-host': 'whatsapp-data1.p.rapidapi.com',
+              'x-rapidapi-key': apiKey
+            }
+          }
+        );
+
+        console.log('[PHOTO] 🔗 RapidAPI Response Status:', response.status);
+
+        if (response.status === 404) {
+          console.log('[PHOTO] 🚫 Photo not found (404)');
+          return new Response(JSON.stringify({ photoUrl: null }), {
+            status: 200,
+            headers: {
+              'Content-Type': 'application/json',
+              ...corsHeaders
+            }
+          });
+        }
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.log('[PHOTO] ❌ API Error:', response.status, '|', errorText.substring(0, 200));
+          return new Response(JSON.stringify({ photoUrl: null }), {
+            status: 200,
+            headers: {
+              'Content-Type': 'application/json',
+              ...corsHeaders
+            }
+          });
+        }
+
+        let photoUrl = null;
+        try {
+          const imageBuffer = await response.arrayBuffer();
+          console.log('[PHOTO] 📦 Got arrayBuffer, size:', imageBuffer.byteLength, 'bytes');
+
+          const uint8Array = new Uint8Array(imageBuffer);
+          console.log('[PHOTO] 📦 Created uint8Array, length:', uint8Array.byteLength);
+
+          let binary = '';
+          for (let i = 0; i < uint8Array.byteLength; i++) {
+            binary += String.fromCharCode(uint8Array[i]);
+          }
+          console.log('[PHOTO] 🔄 Converted to binary string, length:', binary.length);
+
+          const base64String = btoa(binary);
+          console.log('[PHOTO] ✅ Base64 encoded, length:', base64String.length);
+
+          photoUrl = `data:image/jpeg;base64,${base64String}`;
+          console.log('[PHOTO] ✅ Photo URL generated, total length:', photoUrl.length);
+        } catch (err) {
+          console.error('[PHOTO] ❌ Error processing image:', err.message, err.stack);
+          return new Response(JSON.stringify({ photoUrl: null }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json', ...corsHeaders }
+          });
+        }
+
+        return new Response(JSON.stringify({ photoUrl }), {
           status: 200,
           headers: {
             'Content-Type': 'application/json',
             ...corsHeaders
           }
         });
-      }
 
-      // Si error
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.log('[PHOTO] ❌ API Error:', response.status, '|', errorText.substring(0, 200));
-        return new Response(JSON.stringify({ photoUrl: null }), {
-          status: 200,
-          headers: {
-            'Content-Type': 'application/json',
-            ...corsHeaders
-          }
-        });
-      }
-
-      // Obtener foto como ArrayBuffer y convertir a data URL
-      let photoUrl = null;  // Declarar fuera del try para que esté disponible después
-      try {
-        const imageBuffer = await response.arrayBuffer();
-        console.log('[PHOTO] 📦 Got arrayBuffer, size:', imageBuffer.byteLength, 'bytes');
-
-        const uint8Array = new Uint8Array(imageBuffer);
-        console.log('[PHOTO] 📦 Created uint8Array, length:', uint8Array.byteLength);
-
-        // Convertir a base64 sin usar apply (evita límite de argumentos en imágenes grandes)
-        let binary = '';
-        for (let i = 0; i < uint8Array.byteLength; i++) {
-          binary += String.fromCharCode(uint8Array[i]);
-        }
-        console.log('[PHOTO] 🔄 Converted to binary string, length:', binary.length);
-
-        const base64String = btoa(binary);
-        console.log('[PHOTO] ✅ Base64 encoded, length:', base64String.length);
-
-        photoUrl = `data:image/jpeg;base64,${base64String}`;  // Asignar a variable declarada arriba
-        console.log('[PHOTO] ✅ Photo URL generated, total length:', photoUrl.length);
-      } catch (err) {
-        console.error('[PHOTO] ❌ Error processing image:', err.message, err.stack);
-        return new Response(JSON.stringify({ photoUrl: null }), {
-          status: 200,
+      } catch (error) {
+        console.error('Error:', error);
+        return new Response(JSON.stringify({ error: 'Internal server error', details: error.message }), {
+          status: 500,
           headers: { 'Content-Type': 'application/json', ...corsHeaders }
         });
       }
-
-      return new Response(JSON.stringify({ photoUrl }), {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json',
-          ...corsHeaders
-        }
-      });
-
-    } catch (error) {
-      console.error('Error:', error);
-      return new Response(JSON.stringify({ error: 'Internal server error', details: error.message }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders }
-      });
     }
+
+    return new Response(JSON.stringify({ error: 'Not found' }), {
+      status: 404,
+      headers: { 'Content-Type': 'application/json', ...corsHeaders }
+    });
   }
 };
