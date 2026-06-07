@@ -415,6 +415,7 @@
   // ============= POPUP PAYWALL (MODAL) =============
   function showResultsPaywall() {
     const { personName, personWhatsapp, personId } = quizState.data;
+    const suspectYear = 2018 + (personId.charCodeAt(0) % 5);
 
     // Crear overlay
     const overlay = document.createElement('div');
@@ -452,22 +453,55 @@
           </div>
         </div>
 
-        <!-- Resultados bloqueados -->
-        <div class="plin-paywall-results">
-          <h3 class="plin-paywall-results-title">RESULTADOS DE ANTECEDENTES</h3>
+        <!-- Reporte de Riesgo: 3 cards narrativas -->
 
-          <div class="plin-paywall-results-blocked">
-            <div class="plin-paywall-result-line">
-              <span>████████ proceso judicial ████ 2021 ███████</span>
-            </div>
-            <div class="plin-paywall-result-line">
-              <span>████ antecedentes ██████████████████ ████</span>
-            </div>
-            <div class="plin-paywall-result-line">
-              <span>████████████████ registro ████ BLOQUEADO</span>
-            </div>
-            <div class="plin-paywall-gradient-overlay"></div>
+        <!-- Card 1: Risk Narrative (completamente visible) -->
+        <div class="plin-risk-card plin-risk-card--visible">
+          <div class="plin-risk-card-header">
+            <span class="plin-risk-card-icon">⚠️</span>
+            <span class="plin-risk-card-title">Risk Narrative</span>
           </div>
+          <p class="plin-risk-card-body">
+            Oye, ten mucho cuidado. Este número (<strong>${personWhatsapp}</strong>) ha aparecido en varias alertas por comportamientos muy peligrosos y estafas. No es solo un rumor; hay reportes reales de situaciones violentas vinculadas a <strong>${personName}</strong>. Por favor, mantente alerta.
+          </p>
+        </div>
+
+        <!-- Card 2: Expediente Judicial (parcialmente bloqueado) -->
+        <div class="plin-risk-card plin-risk-card--locked" id="plin-card-judicial">
+          <div class="plin-risk-card-header">
+            <span class="plin-risk-card-icon">📋</span>
+            <span class="plin-risk-card-title">Expediente Judicial Detallado</span>
+            <span class="plin-risk-badge">CRÍTICO</span>
+          </div>
+          <p class="plin-risk-card-teaser">
+            ${personName} estuvo involucrado en una situación que empezó con...
+          </p>
+          <div class="plin-risk-card-blurred">
+            <span>████████████ incidente reportado el ${suspectYear} ante autoridades ████████████████</span>
+            <span>████ cargos vinculados a ██████████████████████ ████████</span>
+            <span>████████████████████████████████████████████</span>
+          </div>
+          <div class="plin-risk-lock">🔒</div>
+          <button class="plin-risk-saber-mas">Saber más</button>
+        </div>
+
+        <!-- Card 3: Identidad sospechosa (parcialmente bloqueado) -->
+        <div class="plin-risk-card plin-risk-card--locked" id="plin-card-identidad">
+          <div class="plin-risk-card-header">
+            <span class="plin-risk-card-icon">🔍</span>
+            <span class="plin-risk-card-title">Hay algo raro con quién dice ser</span>
+            <span class="plin-risk-badge">CRÍTICO</span>
+          </div>
+          <p class="plin-risk-card-teaser">
+            Algo no cuadra con su identidad, amiga.<br>
+            Su identificación está señalando un lugar que no tiene sentido y otros datos cruzados.
+          </p>
+          <div class="plin-risk-card-blurred">
+            <span>████████ datos de identidad contradictorios en registros ███████████████</span>
+            <span>████████████████████████████████████</span>
+          </div>
+          <div class="plin-risk-lock">🔒</div>
+          <button class="plin-risk-saber-mas">Saber más</button>
         </div>
 
         <!-- CTA de pago -->
@@ -552,13 +586,24 @@
       fetchAndSetPhoto(quizState.data.personWhatsapp);
     }
 
-    // Eventos - Solo el botón de desbloqueo
+    // Eventos - Botón de desbloqueo principal
     const unlockBtn = overlay.querySelector('.plin-paywall-btn-unlock');
 
     unlockBtn.addEventListener('click', (e) => {
       e.preventDefault();
       log('Procesando pago', quizState.data);
       alert('Pago USD $4.99 — Próximamente integrar Stripe/PayPal');
+    });
+
+    // Cards bloqueadas: cualquier click dispara el scroll al CTA de pago
+    const paywallSection = overlay.querySelector('.plin-paywall-section');
+    overlay.querySelectorAll('.plin-risk-card--locked').forEach((card) => {
+      card.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (paywallSection) {
+          paywallSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
     });
   }
 
@@ -999,6 +1044,109 @@
         background: linear-gradient(180deg, transparent 0%, rgba(236, 72, 153, 0.15) 100%);
         border-radius: 12px;
         pointer-events: none;
+      }
+
+      /* RISK NARRATIVE CARDS */
+      .plin-risk-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 14px 16px;
+        margin-bottom: 12px;
+        border: 1px solid #f3f4f6;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      }
+
+      .plin-risk-card--visible {
+        border-left: 4px solid #f59e0b;
+        background: #fffbeb;
+      }
+
+      .plin-risk-card--locked {
+        cursor: pointer;
+        position: relative;
+      }
+
+      @keyframes plin-pulse-float {
+        0%   { transform: translateY(0px);  box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+        50%  { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(236,72,153,0.18); }
+        100% { transform: translateY(0px);  box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+      }
+
+      .plin-risk-card--locked {
+        animation: plin-pulse-float 2.8s ease-in-out infinite;
+      }
+
+      #plin-card-identidad {
+        animation-delay: 1.4s;
+      }
+
+      .plin-risk-card-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+
+      .plin-risk-card-icon {
+        font-size: 18px;
+        flex-shrink: 0;
+      }
+
+      .plin-risk-card-title {
+        font-weight: 700;
+        font-size: 14px;
+        color: #1f2937;
+        flex: 1;
+      }
+
+      .plin-risk-badge {
+        background: #ef4444;
+        color: white;
+        font-size: 10px;
+        font-weight: 800;
+        padding: 2px 6px;
+        border-radius: 4px;
+        letter-spacing: 0.5px;
+        flex-shrink: 0;
+      }
+
+      .plin-risk-card-body,
+      .plin-risk-card-teaser {
+        font-size: 13px;
+        color: #374151;
+        line-height: 1.5;
+        margin: 0 0 8px 0;
+      }
+
+      .plin-risk-card-blurred {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        filter: blur(4px);
+        user-select: none;
+        color: #9ca3af;
+        font-size: 13px;
+        margin-bottom: 10px;
+      }
+
+      .plin-risk-lock {
+        text-align: center;
+        font-size: 20px;
+        margin: 4px 0 6px 0;
+      }
+
+      .plin-risk-saber-mas {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+        color: white;
+        font-weight: 700;
+        font-size: 14px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 8px;
       }
 
       /* PAYWALL SECTION */
