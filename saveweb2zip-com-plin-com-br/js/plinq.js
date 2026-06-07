@@ -8,7 +8,7 @@ const WORKER_URL = 'https://plin-whatsapp-api.criptosintrading.workers.dev';
 // STRIPE — Método de Pago (on-site)
 // ============================================
 
-const STRIPE_PUBLISHABLE_KEY = 'pk_test_XXXXXXXXXXXXXXXX'; // reemplazar con clave real
+const STRIPE_PUBLISHABLE_KEY = 'pk_live_51PlJuGRvkkVXF3ypkCEGBpmNqXGyII23UB7BSwizP7uxDFfWx9vpejcoIWROhbAgEADdapFyOjQBvB53ATvMqY5v00FjAXrdNF'; // reemplazar con clave real
 
 let stripe = null;
 let stripeElements = null;
@@ -20,10 +20,12 @@ async function initStripe() {
   stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
 
   // 1. Crear PaymentIntent en el Worker (obtener clientSecret)
+  // No necesitamos pasar state.name/phone - son datos de la persona buscada
+  // Los datos del comprador los captura Stripe automáticamente en el Payment Element
   const response = await fetch(`${WORKER_URL}/create-payment-intent`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name: state.name, phone: state.phone })
+    body: JSON.stringify({})
   });
 
   const { clientSecret, error: serverError } = await response.json();

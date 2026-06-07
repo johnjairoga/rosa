@@ -114,7 +114,8 @@ async function createPaymentIntent(request, env, corsHeaders) {
   }
 
   try {
-    const { name, phone } = await request.json();
+    // No necesitamos datos del cliente aquí - Stripe los captura en el Payment Element
+    await request.json();
 
     let stripeKey = env.STRIPE_SECRET_KEY;
     if (stripeKey) {
@@ -137,8 +138,6 @@ async function createPaymentIntent(request, env, corsHeaders) {
       body: new URLSearchParams({
         amount: '499',
         currency: 'usd',
-        'metadata[name]': name || '',
-        'metadata[phone]': phone || '',
         'automatic_payment_methods[enabled]': 'true',
       }).toString()
     });
