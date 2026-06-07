@@ -185,6 +185,25 @@
 
     .input-shake { animation: shake 0.35s ease-in-out; }
     .input-error { border-color: #ba1a1a !important; box-shadow: 0 0 0 1px #ba1a1a !important; }
+
+    .plinq-blurred {
+      filter: blur(4px);
+      user-select: none;
+    }
+
+    @keyframes plinq-pulse-float {
+      0%   { transform: translateY(0px);  box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+      50%  { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(220,38,38,0.18); }
+      100% { transform: translateY(0px);  box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    }
+
+    .plinq-risk-locked {
+      animation: plinq-pulse-float 2.8s ease-in-out infinite;
+    }
+
+    #card-identidad {
+      animation-delay: 1.4s;
+    }
   </style>
 </head>
 
@@ -602,36 +621,65 @@
           <span class="material-symbols-outlined text-xl text-verified-teal" style="font-variation-settings: 'FILL' 1;">check_circle</span>
         </div>
 
-        <div class="glass-card rounded-xl p-gutter flex items-center justify-between border-l-4 border-error bg-error-container/10 relative">
-          <div class="absolute -left-2 top-1/2 -translate-y-1/2 w-3 h-3 bg-error rounded-full animate-pulse"></div>
-          <div class="flex items-center gap-gutter">
-            <div class="bg-error/10 p-3 rounded-lg text-error">
-              <span class="material-symbols-outlined">gavel</span>
-            </div>
-            <div>
-              <p class="font-headline-md text-body-md font-bold">Antecedentes Criminales</p>
-              <p class="font-label-md text-label-md text-error font-semibold">Datos comprometedores encontrados</p>
-            </div>
+        <!-- Risk Narrative (completamente visible) -->
+        <div class="glass-card rounded-xl p-gutter border-l-4 border-amber-400 bg-amber-50">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-lg">⚠️</span>
+            <p class="font-bold text-sm text-gray-800">Risk Narrative</p>
           </div>
-          <button onclick="openPaymentModal()"
-                  class="text-xs font-bold text-white bg-error px-3 py-1.5 rounded-lg shrink-0 animate-pulse hover:bg-red-700">
+          <p class="text-sm text-gray-700 leading-relaxed" id="risk-narrative-text">
+            Oye, ten mucho cuidado. Este número ha aparecido en varias alertas por comportamientos muy peligrosos y estafas. No es solo un rumor; hay reportes reales de situaciones violentas vinculadas a esta persona. Por favor, mantente alerta.
+          </p>
+        </div>
+
+        <!-- Expediente Judicial (parcialmente bloqueado) -->
+        <div class="glass-card rounded-xl p-gutter border-l-4 border-error bg-error-container/10 relative cursor-pointer plinq-risk-locked" id="card-judicial" onclick="openPaymentModal()">
+          <div class="absolute -left-2 top-1/2 -translate-y-1/2 w-3 h-3 bg-error rounded-full animate-pulse"></div>
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <div class="bg-error/10 p-2 rounded-lg text-error">
+                <span class="material-symbols-outlined text-base">gavel</span>
+              </div>
+              <p class="font-bold text-sm text-gray-800">Expediente Judicial Detallado</p>
+            </div>
+            <span class="text-xs font-black text-white bg-error px-2 py-0.5 rounded">CRÍTICO</span>
+          </div>
+          <p class="text-sm text-gray-700 mb-2" id="card-judicial-teaser">
+            Esta persona estuvo involucrada en una situación que empezó con...
+          </p>
+          <div class="plinq-blurred text-sm text-gray-400 flex flex-col gap-1 mb-2">
+            <span>████████████ incidente reportado ante autoridades ████████████████</span>
+            <span>████ cargos vinculados a ██████████████████████ ████████</span>
+            <span>████████████████████████████████████████████</span>
+          </div>
+          <div class="text-center text-xl my-1">🔒</div>
+          <button onclick="openPaymentModal()" class="w-full text-sm font-bold text-white bg-gradient-to-r from-pink-500 to-rose-600 py-2 rounded-lg mt-1">
             Saber más
           </button>
         </div>
 
-        <div class="glass-card rounded-xl p-gutter flex items-center justify-between border-l-4 border-error bg-error-container/10 relative">
+        <!-- Identidad sospechosa (parcialmente bloqueado) -->
+        <div class="glass-card rounded-xl p-gutter border-l-4 border-error bg-error-container/10 relative cursor-pointer plinq-risk-locked" id="card-identidad" onclick="openPaymentModal()">
           <div class="absolute -left-2 top-1/2 -translate-y-1/2 w-3 h-3 bg-error rounded-full animate-pulse"></div>
-          <div class="flex items-center gap-gutter">
-            <div class="bg-error/10 p-3 rounded-lg text-error">
-              <span class="material-symbols-outlined">public</span>
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <div class="bg-error/10 p-2 rounded-lg text-error">
+                <span class="material-symbols-outlined text-base">public</span>
+              </div>
+              <p class="font-bold text-sm text-gray-800">Hay algo raro con quién dice ser</p>
             </div>
-            <div>
-              <p class="font-headline-md text-body-md font-bold">Huella Digital</p>
-              <p class="font-label-md text-label-md text-error font-semibold">Datos comprometedores encontrados</p>
-            </div>
+            <span class="text-xs font-black text-white bg-error px-2 py-0.5 rounded">CRÍTICO</span>
           </div>
-          <button onclick="openPaymentModal()"
-                  class="text-xs font-bold text-white bg-error px-3 py-1.5 rounded-lg shrink-0 animate-pulse hover:bg-red-700">
+          <p class="text-sm text-gray-700 mb-2">
+            Algo no cuadra con su identidad, amiga.<br>
+            Su identificación está señalando un lugar que no tiene sentido y otros datos cruzados.
+          </p>
+          <div class="plinq-blurred text-sm text-gray-400 flex flex-col gap-1 mb-2">
+            <span>████████ datos de identidad contradictorios en registros ███████████████</span>
+            <span>████████████████████████████████████</span>
+          </div>
+          <div class="text-center text-xl my-1">🔒</div>
+          <button onclick="openPaymentModal()" class="w-full text-sm font-bold text-white bg-gradient-to-r from-pink-500 to-rose-600 py-2 rounded-lg mt-1">
             Saber más
           </button>
         </div>
