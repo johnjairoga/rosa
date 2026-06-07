@@ -8,63 +8,9 @@ const WORKER_URL = 'https://plin-whatsapp-api.criptosintrading.workers.dev';
 // STRIPE — Método de Pago (on-site)
 // ============================================
 
-const STRIPE_PUBLISHABLE_KEY = 'pk_live_51PlJuGRvkkVXF3ypkCEGBpmNqXGyII23UB7BSwizP7uxDFfWx9vpejcoIWROhbAgEADdapFyOjQBvB53ATvMqY5v00FjAXrdNF'; // reemplazar con clave real
-
-let stripe = null;
-let stripeElements = null;
-let paymentElement = null;
-
-async function initStripe() {
-  if (paymentElement) return; // Solo inicializar una vez
-
-  stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
-
-  // 1. Crear PaymentIntent en el Worker (obtener clientSecret)
-  // No necesitamos pasar state.name/phone - son datos de la persona buscada
-  // Los datos del comprador los captura Stripe automáticamente en el Payment Element
-  const response = await fetch(`${WORKER_URL}/create-payment-intent`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({})
-  });
-
-  const { clientSecret, error: serverError } = await response.json();
-  if (serverError) throw new Error(serverError);
-
-  // 2. Montar Payment Element con el clientSecret
-  // Stripe detecta automáticamente: Apple Pay, Google Pay, tarjeta
-  stripeElements = stripe.elements({ clientSecret, appearance: {
-    theme: 'stripe',
-    variables: {
-      colorPrimary: '#dc2626',       // rojo Plinq
-      fontFamily: 'Plus Jakarta Sans, sans-serif',
-      borderRadius: '12px',
-    }
-  }});
-
-  paymentElement = stripeElements.create('payment', {
-    layout: 'tabs'  // muestra Apple Pay / Google Pay / Card como pestañas
-  });
-
-  paymentElement.mount('#payment-element');
-}
-
-// Modificar openPaymentModal para inicializar Stripe
-async function openPaymentModal() {
+function openPaymentModal() {
   document.getElementById('payment-modal').classList.remove('hidden');
   document.body.style.overflow = 'hidden';
-
-  // Mostrar spinner mientras carga el Payment Element
-  document.getElementById('payment-element').innerHTML =
-    '<p class="text-xs text-gray-400 text-center py-4">Cargando métodos de pago...</p>';
-
-  try {
-    await initStripe();
-  } catch (err) {
-    document.getElementById('payment-errors').textContent =
-      'Error al cargar métodos de pago. Recarga la página.';
-    document.getElementById('payment-errors').classList.remove('hidden');
-  }
 }
 
 async function handlePayment() {
@@ -73,36 +19,24 @@ async function handlePayment() {
   const errorEl = document.getElementById('payment-errors');
 
   button.disabled = true;
-  buttonText.textContent = 'Procesando...';
+  buttonText.textContent = 'Redirigiendo...';
   errorEl.classList.add('hidden');
 
   try {
-    // Confirmar pago (Stripe maneja Apple Pay / Google Pay / Tarjeta)
-    const { error } = await stripe.confirmPayment({
-      elements: stripeElements,
-      confirmParams: {
-        return_url: window.location.href,
-      },
-      redirect: 'if_required'
+    const response = await fetch(`${WORKER_URL}/create-checkout-session`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({})
     });
 
-    if (error) {
-      errorEl.textContent = error.message;
-      errorEl.classList.remove('hidden');
-      button.disabled = false;
-      buttonText.textContent = 'Ver Informe Completo — $4.99';
-      return;
-    }
+    const { sessionUrl, error } = await response.json();
 
-    // Pago exitoso (sin redirect)
-    closePaymentModal();
-    document.getElementById('payment-success').classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-    state.paid = true;
-    paymentElement = null;
+    if (error) throw new Error(error);
+
+    window.location.href = sessionUrl;
 
   } catch (err) {
-    errorEl.textContent = 'Error inesperado. Intenta nuevamente.';
+    errorEl.textContent = 'Error al procesar. Intenta nuevamente.';
     errorEl.classList.remove('hidden');
     button.disabled = false;
     buttonText.textContent = 'Ver Informe Completo — $4.99';
@@ -113,6 +47,14 @@ function closePaymentSuccess() {
   document.getElementById('payment-success').classList.add('hidden');
   document.body.style.overflow = '';
 }
+
+// Detectar regreso de Stripe con ?payment=success
+document.addEventListener('DOMContentLoaded', () => {
+  if (new URLSearchParams(window.location.search).get('payment') === 'success') {
+    document.getElementById('payment-success').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+});
 
 // ============================================
 // DATOS DE PAÍSES — selector de código

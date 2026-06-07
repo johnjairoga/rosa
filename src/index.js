@@ -104,8 +104,8 @@ async function validateWhatsAppNumber(request, env, corsHeaders) {
   }
 }
 
-// Crear PaymentIntent para Stripe
-async function createPaymentIntent(request, env, corsHeaders) {
+// Crear Checkout Session para Stripe (redirect a página hosted de Stripe)
+async function createCheckoutSession(request, env, corsHeaders) {
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
       status: 405,
@@ -114,9 +114,6 @@ async function createPaymentIntent(request, env, corsHeaders) {
   }
 
   try {
-    // No necesitamos datos del cliente aquí - Stripe los captura en el Payment Element
-    await request.json();
-
     let stripeKey = env.STRIPE_SECRET_KEY;
     if (stripeKey) {
       stripeKey = stripeKey.replace(/^﻿/, '').trim();
@@ -129,35 +126,37 @@ async function createPaymentIntent(request, env, corsHeaders) {
       });
     }
 
-    const stripeResponse = await fetch('https://api.stripe.com/v1/payment_intents', {
+    const stripeResponse = await fetch('https://api.stripe.com/v1/checkout/sessions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${stripeKey}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: new URLSearchParams({
-        amount: '499',
-        currency: 'usd',
-        'automatic_payment_methods[enabled]': 'true',
+        'line_items[0][price]': 'price_1TfVazRvkkVXF3ypeEBVYEU8',
+        'line_items[0][quantity]': '1',
+        mode: 'payment',
+        success_url: 'https://rosa-a5l.pages.dev/?payment=success',
+        cancel_url: 'https://rosa-a5l.pages.dev/',
       }).toString()
     });
 
-    const paymentIntent = await stripeResponse.json();
+    const session = await stripeResponse.json();
 
-    if (paymentIntent.error) {
-      return new Response(JSON.stringify({ error: paymentIntent.error.message }), {
+    if (session.error) {
+      return new Response(JSON.stringify({ error: session.error.message }), {
         status: 400,
         headers: { 'Content-Type': 'application/json', ...corsHeaders }
       });
     }
 
-    return new Response(JSON.stringify({ clientSecret: paymentIntent.client_secret }), {
+    return new Response(JSON.stringify({ sessionUrl: session.url }), {
       status: 200,
       headers: { 'Content-Type': 'application/json', ...corsHeaders }
     });
 
   } catch (err) {
-    return new Response(JSON.stringify({ error: 'Payment error: ' + err.message }), {
+    return new Response(JSON.stringify({ error: 'Checkout error: ' + err.message }), {
       status: 500,
       headers: { 'Content-Type': 'application/json', ...corsHeaders }
     });
@@ -186,8 +185,8 @@ export default {
       return validateWhatsAppNumber(request, env, corsHeaders);
     }
 
-    if (pathname === '/create-payment-intent') {
-      return createPaymentIntent(request, env, corsHeaders);
+    if (pathname === '/create-checkout-session') {
+      return createCheckoutSession(request, env, corsHeaders);
     }
 
     if (pathname === '/photo') {
