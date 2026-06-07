@@ -5,6 +5,114 @@
 const WORKER_URL = 'https://plin-whatsapp-api.criptosintrading.workers.dev';
 
 // ============================================
+// STRIPE — Método de Pago (on-site)
+// ============================================
+
+const STRIPE_PUBLISHABLE_KEY = 'pk_test_XXXXXXXXXXXXXXXX'; // reemplazar con clave real
+
+let stripe = null;
+let stripeElements = null;
+let paymentElement = null;
+
+async function initStripe() {
+  if (paymentElement) return; // Solo inicializar una vez
+
+  stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
+
+  // 1. Crear PaymentIntent en el Worker (obtener clientSecret)
+  const response = await fetch(`${WORKER_URL}/create-payment-intent`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: state.name, phone: state.phone })
+  });
+
+  const { clientSecret, error: serverError } = await response.json();
+  if (serverError) throw new Error(serverError);
+
+  // 2. Montar Payment Element con el clientSecret
+  // Stripe detecta automáticamente: Apple Pay, Google Pay, tarjeta
+  stripeElements = stripe.elements({ clientSecret, appearance: {
+    theme: 'stripe',
+    variables: {
+      colorPrimary: '#dc2626',       // rojo Plinq
+      fontFamily: 'Plus Jakarta Sans, sans-serif',
+      borderRadius: '12px',
+    }
+  }});
+
+  paymentElement = stripeElements.create('payment', {
+    layout: 'tabs'  // muestra Apple Pay / Google Pay / Card como pestañas
+  });
+
+  paymentElement.mount('#payment-element');
+}
+
+// Modificar openPaymentModal para inicializar Stripe
+async function openPaymentModal() {
+  document.getElementById('payment-modal').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+
+  // Mostrar spinner mientras carga el Payment Element
+  document.getElementById('payment-element').innerHTML =
+    '<p class="text-xs text-gray-400 text-center py-4">Cargando métodos de pago...</p>';
+
+  try {
+    await initStripe();
+  } catch (err) {
+    document.getElementById('payment-errors').textContent =
+      'Error al cargar métodos de pago. Recarga la página.';
+    document.getElementById('payment-errors').classList.remove('hidden');
+  }
+}
+
+async function handlePayment() {
+  const button = document.getElementById('pay-button');
+  const buttonText = document.getElementById('pay-button-text');
+  const errorEl = document.getElementById('payment-errors');
+
+  button.disabled = true;
+  buttonText.textContent = 'Procesando...';
+  errorEl.classList.add('hidden');
+
+  try {
+    // Confirmar pago (Stripe maneja Apple Pay / Google Pay / Tarjeta)
+    const { error } = await stripe.confirmPayment({
+      elements: stripeElements,
+      confirmParams: {
+        return_url: window.location.href,
+      },
+      redirect: 'if_required'
+    });
+
+    if (error) {
+      errorEl.textContent = error.message;
+      errorEl.classList.remove('hidden');
+      button.disabled = false;
+      buttonText.textContent = 'Ver Informe Completo — $4.99';
+      return;
+    }
+
+    // Pago exitoso (sin redirect)
+    closePaymentModal();
+    document.getElementById('payment-success').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    state.paid = true;
+    paymentElement = null;
+
+  } catch (err) {
+    errorEl.textContent = 'Error inesperado. Intenta nuevamente.';
+    errorEl.classList.remove('hidden');
+    button.disabled = false;
+    buttonText.textContent = 'Ver Informe Completo — $4.99';
+  }
+}
+
+function closePaymentSuccess() {
+  document.getElementById('payment-success').classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+// ============================================
 // DATOS DE PAÍSES — selector de código
 // ============================================
 

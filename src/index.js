@@ -303,4 +303,70 @@ export default {
       });
     }
   }
+
+  // Endpoint para crear PaymentIntent de Stripe
+  if (pathname === '/create-payment-intent') {
+    if (request.method !== 'POST') {
+      return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+        status: 405,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders }
+      });
+    }
+
+    try {
+      const { name, phone } = await request.json();
+
+      let stripeKey = env.STRIPE_SECRET_KEY;
+      if (stripeKey) stripeKey = stripeKey.replace(/^﻿/, '').trim(); // BOM cleanup
+
+      if (!stripeKey) {
+        return new Response(JSON.stringify({ error: 'Payment not configured' }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        });
+      }
+
+      // Crear PaymentIntent en Stripe
+      const stripeResponse = await fetch('https://api.stripe.com/v1/payment_intents', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${stripeKey}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          amount: '499',           // $4.99 en centavos USD
+          currency: 'usd',
+          'metadata[name]': name || '',
+          'metadata[phone]': phone || '',
+          'automatic_payment_methods[enabled]': 'true',
+        }).toString()
+      });
+
+      const paymentIntent = await stripeResponse.json();
+
+      if (paymentIntent.error) {
+        return new Response(JSON.stringify({ error: paymentIntent.error.message }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        });
+      }
+
+      return new Response(JSON.stringify({ clientSecret: paymentIntent.client_secret }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders }
+      });
+
+    } catch (err) {
+      return new Response(JSON.stringify({ error: 'Payment error: ' + err.message }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders }
+      });
+    }
+  }
+
+  // Ruta no encontrada
+  return new Response(JSON.stringify({ error: 'Not found' }), {
+    status: 404,
+    headers: { 'Content-Type': 'application/json', ...corsHeaders }
+  });
 };
