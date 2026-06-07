@@ -448,16 +448,14 @@ function populateResults() {
     }, 300);
   }
 
-  // Risk Narrative: inyectar número y nombre reales
-  const riskNarrative = document.getElementById('risk-narrative-text');
-  if (riskNarrative) {
-    riskNarrative.innerHTML = `Oye, ten mucho cuidado. Este número (<strong>${state.phone}</strong>) ha aparecido en varias alertas por comportamientos muy peligrosos y estafas. No es solo un rumor; hay reportes reales de situaciones vinculadas a <strong>${state.name}</strong>. Por favor, mantente alerta.`;
-  }
+  // Card 1: nombre en el título "Encontramos 3 hallazgos relacionados con [nombre]"
+  const riskName = document.getElementById('risk-narrative-name');
+  if (riskName) riskName.textContent = state.name;
 
-  // Expediente Judicial: teaser con nombre real
+  // Card 2: teaser con nombre real
   const judicialTeaser = document.getElementById('card-judicial-teaser');
   if (judicialTeaser) {
-    judicialTeaser.textContent = `${state.name} estuvo involucrado en una situación que empezó con...`;
+    judicialTeaser.textContent = `A simple vista todo puede parecer normal. Pero encontramos información adicional vinculada a ${state.name} que aún no estás viendo.`;
   }
 }
 
