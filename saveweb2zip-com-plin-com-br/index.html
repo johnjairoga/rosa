@@ -601,8 +601,12 @@
           </p>
         </div>
 
+      </div>
+      <!-- Cards bloqueadas en scroll horizontal -->
+      <div class="flex overflow-x-auto gap-4 pb-2 scrollbar-hide -mx-container-margin px-container-margin">
+
         <!-- Card 2: Bloqueada — misterio -->
-        <div class="glass-card rounded-xl p-gutter border-l-4 border-error bg-error-container/10 relative cursor-pointer plinq-risk-locked" id="card-judicial" onclick="openPaymentModal()">
+        <div class="flex-shrink-0 w-72 glass-card rounded-xl p-gutter border-l-4 border-error bg-error-container/10 relative cursor-pointer plinq-risk-locked" id="card-judicial" onclick="openPaymentModal()">
           <div class="absolute -left-2 top-1/2 -translate-y-1/2 w-3 h-3 bg-error rounded-full animate-pulse"></div>
           <div class="flex items-center gap-2 mb-2">
             <div class="bg-error/10 p-2 rounded-lg text-error">
@@ -625,7 +629,7 @@
         </div>
 
         <!-- Card 3: Bloqueada — información oculta -->
-        <div class="glass-card rounded-xl p-gutter border-l-4 border-error bg-error-container/10 relative cursor-pointer plinq-risk-locked" id="card-identidad" onclick="openPaymentModal()">
+        <div class="flex-shrink-0 w-72 glass-card rounded-xl p-gutter border-l-4 border-error bg-error-container/10 relative cursor-pointer plinq-risk-locked" id="card-identidad" onclick="openPaymentModal()">
           <div class="absolute -left-2 top-1/2 -translate-y-1/2 w-3 h-3 bg-error rounded-full animate-pulse"></div>
           <div class="flex items-center gap-2 mb-2">
             <div class="bg-error/10 p-2 rounded-lg text-error">
@@ -646,6 +650,7 @@
             🔒 Acceder al informe
           </button>
         </div>
+
       </div>
     </section>
 
