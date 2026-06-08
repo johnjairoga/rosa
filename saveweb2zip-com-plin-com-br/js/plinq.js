@@ -443,7 +443,7 @@ function populateResults() {
   const ring = document.querySelector('.score-ring');
   if (ring) {
     setTimeout(() => {
-      const offset = 440 - (state.trustScore / 100 * 440);
+      const offset = 352 - (state.trustScore / 100 * 352);
       ring.style.strokeDashoffset = offset.toString();
     }, 300);
   }
@@ -494,7 +494,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Score ring animation setup
   const ring = document.querySelector('.score-ring');
   if (ring) {
-    // Initial state: empty ring
-    ring.style.strokeDashoffset = '440';
+    ring.style.strokeDashoffset = '352';
   }
 });

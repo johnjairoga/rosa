@@ -557,15 +557,15 @@
 
     <div class="flex flex-col gap-gutter">
       <!-- Score ring card — WARNING/ALERT style -->
-      <div class="glass-card rounded-xl p-stack-md flex flex-col items-center justify-center space-y-stack-sm relative border-2 border-orange-300">
-        <div class="absolute top-2 right-2 px-3 py-1 bg-orange-100 text-orange-600 rounded-full text-xs font-bold flex items-center gap-1 animate-pulse">
-          <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">warning</span>
+      <div class="glass-card rounded-xl p-4 flex flex-col items-center justify-center space-y-2 relative border-2 border-orange-300">
+        <div class="absolute top-2 right-2 px-2 py-0.5 bg-orange-100 text-orange-600 rounded-full text-xs font-bold flex items-center gap-1 animate-pulse">
+          <span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">warning</span>
           EN ANÁLISIS
         </div>
-        <div class="relative w-40 h-40">
+        <div class="relative w-32 h-32">
           <svg class="w-full h-full transform -rotate-90">
-            <circle class="text-surface-container-highest" cx="80" cy="80" fill="transparent" r="70" stroke="currentColor" stroke-width="12"></circle>
-            <circle class="score-ring" cx="80" cy="80" fill="transparent" r="70" stroke="url(#gradient-warning)" stroke-dasharray="440" stroke-dashoffset="44" stroke-linecap="round" stroke-width="12"></circle>
+            <circle class="text-surface-container-highest" cx="64" cy="64" fill="transparent" r="56" stroke="currentColor" stroke-width="10"></circle>
+            <circle class="score-ring" cx="64" cy="64" fill="transparent" r="56" stroke="url(#gradient-warning)" stroke-dasharray="352" stroke-dashoffset="35" stroke-linecap="round" stroke-width="10"></circle>
             <defs>
               <linearGradient id="gradient-warning" x1="0%" x2="100%" y1="0%" y2="0%">
                 <stop offset="0%" style="stop-color:#f97316"></stop>
@@ -574,11 +574,11 @@
             </defs>
           </svg>
           <div class="absolute inset-0 flex flex-col items-center justify-center">
-            <span class="font-headline-xl text-headline-xl text-orange-600" id="trust-score">45</span>
-            <span class="font-label-md text-label-md text-orange-500 uppercase">RIESGO</span>
+            <span class="text-2xl font-bold text-orange-600" id="trust-score">45</span>
+            <span class="text-[10px] font-bold text-orange-500 uppercase tracking-wide">RIESGO</span>
           </div>
         </div>
-        <p class="text-center font-body-md font-semibold text-error">Actividad Sospechosa Detectada</p>
+        <p class="text-center text-sm font-semibold text-error">Actividad Sospechosa Detectada</p>
       </div>
 
     </div>
