@@ -457,6 +457,24 @@ function populateResults() {
   if (judicialTeaser) {
     judicialTeaser.textContent = `A simple vista todo puede parecer normal. Pero encontramos información adicional vinculada a ${state.name} que aún no estás viendo.`;
   }
+
+  // Contador social proof animado
+  const counterEl = document.getElementById('social-counter');
+  if (counterEl) {
+    const target = 14200 + Math.floor(Math.random() * 300);
+    const start = target - 180;
+    const duration = 1800;
+    const startTime = performance.now();
+    function animateCounter(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.floor(start + (target - start) * eased);
+      counterEl.textContent = current.toLocaleString('es-AR');
+      if (progress < 1) requestAnimationFrame(animateCounter);
+    }
+    requestAnimationFrame(animateCounter);
+  }
 }
 
 // ============================================
