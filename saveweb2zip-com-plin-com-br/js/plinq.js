@@ -162,8 +162,6 @@ function goToScreen(screenId) {
   });
   document.getElementById(screenId).classList.add('active');
   window.scrollTo(0, 0);
-  const stickyBar = document.getElementById('sticky-unlock-bar');
-  if (stickyBar) stickyBar.style.display = screenId === 'screen-resultados' ? 'block' : 'none';
 }
 
 // ============================================
