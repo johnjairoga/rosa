@@ -424,56 +424,22 @@ async function startProcessing() {
 
 function populateResults() {
   // Nombre
-  const nameElement = document.getElementById('result-name');
-  nameElement.textContent = state.name;
+  document.getElementById('result-name').textContent = state.name;
 
   // Foto
   const photoElement = document.getElementById('result-profile-photo');
-  if (state.photoUrl) {
-    photoElement.src = state.photoUrl;
-  } else {
-    photoElement.src = '/images/avatar-placeholder.png';
+  photoElement.src = state.photoUrl || '/images/avatar-placeholder.png';
+
+  // Fecha y hora de búsqueda
+  const searchTime = document.getElementById('result-search-time');
+  if (searchTime) {
+    searchTime.textContent = new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' });
   }
 
-  // Trust Score
-  const scoreElement = document.getElementById('trust-score');
-  scoreElement.textContent = state.trustScore;
-
-  // Animar el ring del score
-  const ring = document.querySelector('.score-ring');
-  if (ring) {
-    setTimeout(() => {
-      const offset = 352 - (state.trustScore / 100 * 352);
-      ring.style.strokeDashoffset = offset.toString();
-    }, 300);
-  }
-
-  // Card 1: nombre en el título "Encontramos 3 hallazgos relacionados con [nombre]"
-  const riskName = document.getElementById('risk-narrative-name');
-  if (riskName) riskName.textContent = state.name;
-
-  // Card 2: teaser con nombre real
-  const judicialTeaser = document.getElementById('card-judicial-teaser');
-  if (judicialTeaser) {
-    judicialTeaser.textContent = `A simple vista todo puede parecer normal. Pero encontramos información adicional vinculada a ${state.name} que aún no estás viendo.`;
-  }
-
-  // Contador social proof animado
-  const counterEl = document.getElementById('social-counter');
-  if (counterEl) {
-    const target = 14200 + Math.floor(Math.random() * 300);
-    const start = target - 180;
-    const duration = 1800;
-    const startTime = performance.now();
-    function animateCounter(now) {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      const current = Math.floor(start + (target - start) * eased);
-      counterEl.textContent = current.toLocaleString('es-AR');
-      if (progress < 1) requestAnimationFrame(animateCounter);
-    }
-    requestAnimationFrame(animateCounter);
+  // Número de hallazgos derivado del trust score (rango 15-45 → 2-5 hallazgos)
+  const findingsEl = document.getElementById('findings-count');
+  if (findingsEl) {
+    findingsEl.textContent = Math.ceil(state.trustScore / 10);
   }
 }
 

@@ -543,146 +543,160 @@
     </button>
   </header>
 
-  <main class="pt-6 sm:pt-10 pb-8 px-container-margin max-w-2xl mx-auto space-y-stack-md mt-16 flex-grow flex flex-col flex-1" style="padding-bottom: max(32px, env(safe-area-inset-bottom, 32px))">
-    <!-- Header foto perfil — circular pura -->
-    <div class="flex flex-col items-center gap-3 mb-stack-md">
-      <div class="w-40 h-40 sm:w-52 sm:h-52 rounded-full overflow-hidden border-4 border-white shadow-lg">
-        <img id="result-profile-photo"
-             src="/images/avatar-placeholder.png"
-             alt="Foto"
-             class="w-full h-full object-cover" />
+  <main class="pt-6 pb-8 px-container-margin max-w-2xl mx-auto space-y-4 mt-16 flex-grow" style="padding-bottom: max(32px, env(safe-area-inset-bottom, 32px))">
+
+    <!-- Sección 1: Profile Card -->
+    <div class="bg-white rounded-2xl p-4 flex items-start gap-4 shadow-sm border border-gray-100">
+      <div class="relative flex-shrink-0">
+        <div class="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-100 shadow-md">
+          <img id="result-profile-photo" src="/images/avatar-placeholder.png" alt="Foto" class="w-full h-full object-cover">
+        </div>
+        <div class="absolute -bottom-1 -right-1 w-7 h-7 bg-green-500 rounded-full border-2 border-white flex items-center justify-center shadow-sm">
+          <span class="material-symbols-outlined text-white text-sm" style="font-variation-settings:'FILL' 1;">check</span>
+        </div>
       </div>
-      <div class="text-center max-w-xs px-2">
-        <h3 class="font-headline-md text-on-surface break-words" id="result-name">—</h3>
-        <p class="text-xs text-orange-600 font-semibold">⚠️ Verificada recientemente</p>
+      <div class="flex-1 min-w-0 pt-1">
+        <h3 class="font-bold text-xl text-gray-900 break-words leading-tight" id="result-name">—</h3>
+        <span class="inline-flex items-center gap-1 bg-purple-100 text-purple-700 text-[11px] font-bold px-2 py-0.5 rounded-full mt-1.5">
+          <span class="material-symbols-outlined text-[13px]" style="font-variation-settings:'FILL' 1;">person_check</span>
+          IDENTIDAD ENCONTRADA
+        </span>
+        <div class="mt-2 space-y-1">
+          <p class="text-sm text-gray-600 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-green-500 text-base" style="font-variation-settings:'FILL' 1;">check_circle</span>
+            Número validado
+          </p>
+          <p class="text-sm text-gray-600 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-green-500 text-base" style="font-variation-settings:'FILL' 1;">check_circle</span>
+            Perfil público encontrado
+          </p>
+        </div>
+        <p class="text-xs text-gray-400 mt-2">Búsqueda realizada: <span id="result-search-time">—</span></p>
       </div>
     </div>
 
-    <div class="flex flex-col gap-gutter">
-      <!-- Score ring card — WARNING/ALERT style -->
-      <div class="glass-card rounded-xl p-4 flex flex-col items-center justify-center space-y-2 relative border-2 border-orange-300">
-        <div class="absolute top-2 right-2 px-2 py-0.5 bg-orange-100 text-orange-600 rounded-full text-xs font-bold flex items-center gap-1 animate-pulse">
-          <span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">warning</span>
-          EN ANÁLISIS
+    <!-- Sección 2: Findings Summary -->
+    <div class="rounded-2xl p-4 border border-red-200" style="background: linear-gradient(135deg, #fff5f5 0%, #fff0f0 100%);">
+      <div class="flex items-start gap-3 mb-4">
+        <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
+          <span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings:'FILL' 1;">error</span>
         </div>
-        <div class="relative w-32 h-32">
-          <svg class="w-full h-full transform -rotate-90">
-            <circle class="text-surface-container-highest" cx="64" cy="64" fill="transparent" r="56" stroke="currentColor" stroke-width="10"></circle>
-            <circle class="score-ring" cx="64" cy="64" fill="transparent" r="56" stroke="url(#gradient-warning)" stroke-dasharray="352" stroke-dashoffset="35" stroke-linecap="round" stroke-width="10"></circle>
-            <defs>
-              <linearGradient id="gradient-warning" x1="0%" x2="100%" y1="0%" y2="0%">
-                <stop offset="0%" style="stop-color:#f97316"></stop>
-                <stop offset="100%" style="stop-color:#dc2626"></stop>
-              </linearGradient>
-            </defs>
-          </svg>
-          <div class="absolute inset-0 flex flex-col items-center justify-center">
-            <span class="text-2xl font-bold text-orange-600" id="trust-score">45</span>
-            <span class="text-[10px] font-bold text-orange-500 uppercase tracking-wide">RIESGO</span>
-          </div>
+        <div class="flex-1 min-w-0">
+          <h3 class="font-bold text-xl text-red-600 leading-tight">Encontramos <span id="findings-count">4</span> hallazgos</h3>
+          <p class="text-sm text-gray-600 mt-0.5 leading-relaxed">Se detectaron registros e información pública asociada a esta persona que podrían ser relevantes para ti.</p>
         </div>
-        <p class="text-center text-sm font-semibold text-error">Actividad Sospechosa Detectada</p>
       </div>
-
+      <div class="grid grid-cols-3 gap-2">
+        <div class="bg-white rounded-xl p-2.5 text-center shadow-sm">
+          <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center mx-auto mb-1">
+            <span class="material-symbols-outlined text-red-500 text-base" style="font-variation-settings:'FILL' 1;">lab_profile</span>
+          </div>
+          <p class="text-lg font-bold text-red-600 leading-none">4</p>
+          <p class="text-[10px] text-gray-500 leading-tight mt-0.5">Eventos detectados</p>
+        </div>
+        <div class="bg-white rounded-xl p-2.5 text-center shadow-sm">
+          <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-1">
+            <span class="material-symbols-outlined text-orange-500 text-base" style="font-variation-settings:'FILL' 1;">folder_open</span>
+          </div>
+          <p class="text-lg font-bold text-orange-500 leading-none">2</p>
+          <p class="text-[10px] text-gray-500 leading-tight mt-0.5">Registros pendientes</p>
+        </div>
+        <div class="bg-white rounded-xl p-2.5 text-center shadow-sm">
+          <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-1">
+            <span class="material-symbols-outlined text-purple-500 text-base" style="font-variation-settings:'FILL' 1;">manage_accounts</span>
+          </div>
+          <p class="text-lg font-bold text-purple-600 leading-none">1</p>
+          <p class="text-[10px] text-gray-500 leading-tight mt-0.5">Coincidencia relevante</p>
+        </div>
+      </div>
     </div>
 
-    <section class="space-y-stack-sm">
-      <div class="space-y-gutter">
-
-        <!-- Card 1: Gancho visible con nombre dinámico -->
-        <div class="glass-card rounded-xl p-gutter border-l-4 border-amber-400 bg-amber-50">
-          <p class="font-bold text-sm text-gray-800 mb-2">
-            🚨 Encontramos 3 hallazgos relacionados con <span id="risk-narrative-name">esta persona</span>
-          </p>
-          <p class="text-sm text-gray-700 leading-relaxed">
-            Uno de ellos podría ser importante para entender mejor el historial de esta persona. Los detalles permanecen protegidos hasta desbloquear el informe.
-          </p>
-        </div>
-
-      </div>
-      <!-- Cards Netflix-style en scroll horizontal -->
-      <div class="flex overflow-x-auto gap-4 pb-4 scrollbar-hide -mx-container-margin px-container-margin">
-
-        <!-- Card 1: Encontramos más de lo que parece -->
-        <div class="flex-shrink-0 w-56 sm:w-64 glass-card rounded-xl overflow-hidden cursor-pointer plinq-risk-locked" id="card-judicial" onclick="openPaymentModal()">
-          <!-- Thumbnail area -->
-          <div class="h-28 bg-gradient-to-br from-rose-900 to-pink-700 flex flex-col items-center justify-center relative">
-            <span class="material-symbols-outlined text-white text-4xl mb-1" style="font-variation-settings:'FILL' 1;">manage_search</span>
-            <span class="absolute top-2 right-2 bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">HALLAZGO</span>
-            <div class="absolute bottom-2 left-2 w-2 h-2 bg-white rounded-full animate-pulse opacity-80"></div>
-          </div>
-          <!-- Info area -->
-          <div class="p-3">
-            <p class="font-bold text-sm text-gray-800 mb-1">👀 Encontramos más de lo que parece</p>
-            <p class="text-xs text-gray-600 mb-2 leading-relaxed" id="card-judicial-teaser">A simple vista todo puede parecer normal. Pero encontramos registros adicionales que aún no estás viendo.</p>
-            <div class="plinq-blurred text-[11px] text-gray-400 flex flex-col gap-0.5 mb-2">
-              <span>████████████ registros ████████████████</span>
-              <span>████ vinculados ██████████████ ████</span>
+    <!-- Sección 3: Timeline -->
+    <div>
+      <h3 class="flex items-center gap-2 font-bold text-base text-gray-800 mb-3">
+        <span class="material-symbols-outlined text-purple-500 text-xl">schedule</span>
+        Línea de tiempo de hallazgos
+      </h3>
+      <div class="overflow-x-auto scrollbar-hide -mx-container-margin px-container-margin">
+        <div class="flex gap-5 w-max pb-1">
+          <div class="flex flex-col items-center w-20">
+            <div class="w-20 bg-white rounded-xl p-3 text-center shadow-sm border border-gray-100">
+              <p class="text-sm font-bold text-red-600">2025</p>
+              <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mx-auto mt-1.5">
+                <span class="material-symbols-outlined text-gray-400 text-base" style="font-variation-settings:'FILL' 1;">lock</span>
+              </div>
             </div>
-            <button onclick="openPaymentModal()" class="w-full text-xs font-bold text-white bg-gradient-to-r from-pink-500 to-rose-600 py-1.5 rounded-lg plinq-btn-pulse">
-              🔒 Saber más
-            </button>
+            <div class="w-px h-3 bg-gray-200"></div>
+            <div class="w-3 h-3 rounded-full bg-red-500 border-2 border-white shadow-sm"></div>
+            <p class="text-[10px] font-semibold text-red-600 text-center mt-1.5 leading-tight">Actividad<br>detectada</p>
           </div>
-        </div>
-
-        <!-- Card 2: Información oculta -->
-        <div class="flex-shrink-0 w-56 sm:w-64 glass-card rounded-xl overflow-hidden cursor-pointer plinq-risk-locked" id="card-identidad" onclick="openPaymentModal()">
-          <!-- Thumbnail area -->
-          <div class="h-28 bg-gradient-to-br from-purple-900 to-rose-800 flex flex-col items-center justify-center relative">
-            <span class="material-symbols-outlined text-white text-4xl mb-1" style="font-variation-settings:'FILL' 1;">visibility_off</span>
-            <span class="absolute top-2 right-2 bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">OCULTO</span>
-            <div class="absolute bottom-2 left-2 w-2 h-2 bg-white rounded-full animate-pulse opacity-80"></div>
-          </div>
-          <!-- Info area -->
-          <div class="p-3">
-            <p class="font-bold text-sm text-gray-800 mb-1">⚠️ Hay información que no aparece en redes</p>
-            <p class="text-xs text-gray-600 mb-2 leading-relaxed">Nuestros sistemas encontraron datos que muchas personas descubren cuando el problema ya ocurrió.</p>
-            <div class="plinq-blurred text-[11px] text-gray-400 flex flex-col gap-0.5 mb-2">
-              <span>████████ datos no indexados ███████████</span>
-              <span>██████████████████████████████</span>
+          <div class="flex flex-col items-center w-20">
+            <div class="w-20 bg-white rounded-xl p-3 text-center shadow-sm border border-gray-100">
+              <p class="text-sm font-bold text-orange-500">2024</p>
+              <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mx-auto mt-1.5">
+                <span class="material-symbols-outlined text-gray-400 text-base" style="font-variation-settings:'FILL' 1;">lock</span>
+              </div>
             </div>
-            <button onclick="openPaymentModal()" class="w-full text-xs font-bold text-white bg-gradient-to-r from-pink-500 to-rose-600 py-1.5 rounded-lg plinq-btn-pulse">
-              🔒 Saber más
-            </button>
+            <div class="w-px h-3 bg-gray-200"></div>
+            <div class="w-3 h-3 rounded-full bg-orange-500 border-2 border-white shadow-sm"></div>
+            <p class="text-[10px] font-semibold text-orange-500 text-center mt-1.5 leading-tight">Registro<br>asociado</p>
+          </div>
+          <div class="flex flex-col items-center w-20">
+            <div class="w-20 bg-white rounded-xl p-3 text-center shadow-sm border border-gray-100">
+              <p class="text-sm font-bold text-purple-600">2023</p>
+              <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mx-auto mt-1.5">
+                <span class="material-symbols-outlined text-gray-400 text-base" style="font-variation-settings:'FILL' 1;">lock</span>
+              </div>
+            </div>
+            <div class="w-px h-3 bg-gray-200"></div>
+            <div class="w-3 h-3 rounded-full bg-purple-500 border-2 border-white shadow-sm"></div>
+            <p class="text-[10px] font-semibold text-purple-600 text-center mt-1.5 leading-tight">Incidente<br>reportado</p>
+          </div>
+          <div class="flex flex-col items-center w-20">
+            <div class="w-20 bg-white rounded-xl p-3 text-center shadow-sm border border-gray-100">
+              <p class="text-sm font-bold text-blue-600">2021</p>
+              <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mx-auto mt-1.5">
+                <span class="material-symbols-outlined text-gray-400 text-base" style="font-variation-settings:'FILL' 1;">lock</span>
+              </div>
+            </div>
+            <div class="w-px h-3 bg-gray-200"></div>
+            <div class="w-3 h-3 rounded-full bg-blue-500 border-2 border-white shadow-sm"></div>
+            <p class="text-[10px] font-semibold text-blue-600 text-center mt-1.5 leading-tight">Coincidencia<br>encontrada</p>
           </div>
         </div>
-
       </div>
+      <p class="text-xs text-gray-400 flex items-center gap-1 mt-3">
+        <span class="material-symbols-outlined text-xs">shield</span>
+        Los detalles completos están protegidos por privacidad.
+      </p>
+    </div>
 
-      <!-- Social proof — debajo de las cards -->
-      <div class="flex items-center gap-3 pt-3 border-t border-outline-variant/20">
-        <div class="flex -space-x-2 flex-shrink-0">
-          <img src="images/avatars/avatar-1.png" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" class="w-8 h-8 rounded-full border-2 border-white object-cover" alt="">
-          <div class="w-8 h-8 rounded-full border-2 border-white bg-gradient-to-br from-violet-400 to-purple-600 hidden"></div>
-          <img src="images/avatars/avatar-2.png" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" class="w-8 h-8 rounded-full border-2 border-white object-cover" alt="">
-          <div class="w-8 h-8 rounded-full border-2 border-white bg-gradient-to-br from-rose-400 to-pink-600 hidden"></div>
-          <img src="images/avatars/avatar-3.png" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" class="w-8 h-8 rounded-full border-2 border-white object-cover" alt="">
-          <div class="w-8 h-8 rounded-full border-2 border-white bg-gradient-to-br from-amber-400 to-orange-500 hidden"></div>
-          <img src="images/avatars/avatar-4.png" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" class="w-8 h-8 rounded-full border-2 border-white object-cover" alt="">
-          <div class="w-8 h-8 rounded-full border-2 border-white bg-gradient-to-br from-teal-400 to-cyan-500 hidden"></div>
-          <div class="w-8 h-8 rounded-full border-2 border-white bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center flex-shrink-0">
-            <span class="text-white text-[9px] font-bold">+2k</span>
-          </div>
-        </div>
-        <div class="min-w-0">
-          <p class="text-sm font-bold text-on-surface leading-tight">
-            <span id="social-counter" class="text-primary">14.200</span> personas
-          </p>
-          <p class="text-xs text-on-surface-variant leading-tight">verificaron a alguien esta semana</p>
-        </div>
-        <div class="ml-auto flex-shrink-0 flex items-center gap-1">
-          <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-          <span class="text-[10px] text-green-600 font-semibold">En vivo</span>
-        </div>
+    <!-- Sección 4: Protected info -->
+    <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
+      <div class="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm">
+        <span class="material-symbols-outlined text-white text-xl" style="font-variation-settings:'FILL' 1;">shield</span>
       </div>
+      <div class="flex-1 min-w-0">
+        <p class="font-bold text-sm text-gray-800">Información protegida</p>
+        <p class="text-xs text-gray-600 mt-0.5 leading-relaxed">Por tu seguridad, los detalles específicos de cada hallazgo permanecen ocultos hasta que desbloquees el informe completo.</p>
+      </div>
+    </div>
 
-      <!-- CTA comunidad -->
-      <button onclick="openPaymentModal()" class="w-full mt-1 py-3.5 rounded-2xl font-bold text-sm text-white flex flex-col items-center gap-0.5 shadow-lg" style="background: linear-gradient(135deg, #b10e6b 0%, #DB2777 50%, #f43f5e 100%);">
-        <span>🔓 Desbloquea el informe completo</span>
-        <span class="text-[11px] font-normal opacity-90">y sé parte de nuestra comunidad</span>
+    <!-- Sección 5: CTA -->
+    <div class="space-y-2 pb-2">
+      <button onclick="openPaymentModal()" class="w-full py-4 rounded-2xl font-bold text-base text-white flex items-center justify-center gap-2 shadow-lg" style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);">
+        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">lock</span>
+        VER INFORME COMPLETO
       </button>
-
-    </section>
+      <p class="text-center text-xs text-gray-400 flex items-center justify-center gap-1">
+        <span class="material-symbols-outlined text-xs">shield</span>
+        Proceso 100% seguro y confidencial
+      </p>
+      <p class="text-center text-xs text-gray-400 flex items-center justify-center gap-1">
+        <span class="material-symbols-outlined text-xs">lock</span>
+        Tu información está segura con encriptación de nivel bancario.
+      </p>
+    </div>
 
   </main>
 
