@@ -652,11 +652,15 @@
       <!-- Social proof — debajo de las cards -->
       <div class="flex items-center gap-3 pt-3 border-t border-outline-variant/20">
         <div class="flex -space-x-2 flex-shrink-0">
-          <div class="w-8 h-8 rounded-full border-2 border-white bg-gradient-to-br from-violet-400 to-purple-600"></div>
-          <div class="w-8 h-8 rounded-full border-2 border-white bg-gradient-to-br from-rose-400 to-pink-600"></div>
-          <div class="w-8 h-8 rounded-full border-2 border-white bg-gradient-to-br from-amber-400 to-orange-500"></div>
-          <div class="w-8 h-8 rounded-full border-2 border-white bg-gradient-to-br from-teal-400 to-cyan-500"></div>
-          <div class="w-8 h-8 rounded-full border-2 border-white bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center">
+          <img src="images/avatars/avatar-1.png" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" class="w-8 h-8 rounded-full border-2 border-white object-cover" alt="">
+          <div class="w-8 h-8 rounded-full border-2 border-white bg-gradient-to-br from-violet-400 to-purple-600 hidden"></div>
+          <img src="images/avatars/avatar-2.png" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" class="w-8 h-8 rounded-full border-2 border-white object-cover" alt="">
+          <div class="w-8 h-8 rounded-full border-2 border-white bg-gradient-to-br from-rose-400 to-pink-600 hidden"></div>
+          <img src="images/avatars/avatar-3.png" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" class="w-8 h-8 rounded-full border-2 border-white object-cover" alt="">
+          <div class="w-8 h-8 rounded-full border-2 border-white bg-gradient-to-br from-amber-400 to-orange-500 hidden"></div>
+          <img src="images/avatars/avatar-4.png" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" class="w-8 h-8 rounded-full border-2 border-white object-cover" alt="">
+          <div class="w-8 h-8 rounded-full border-2 border-white bg-gradient-to-br from-teal-400 to-cyan-500 hidden"></div>
+          <div class="w-8 h-8 rounded-full border-2 border-white bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center flex-shrink-0">
             <span class="text-white text-[9px] font-bold">+2k</span>
           </div>
         </div>
@@ -671,6 +675,12 @@
           <span class="text-[10px] text-green-600 font-semibold">En vivo</span>
         </div>
       </div>
+
+      <!-- CTA comunidad -->
+      <button onclick="openPaymentModal()" class="w-full mt-1 py-3.5 rounded-2xl font-bold text-sm text-white flex flex-col items-center gap-0.5 shadow-lg" style="background: linear-gradient(135deg, #b10e6b 0%, #DB2777 50%, #f43f5e 100%);">
+        <span>🔓 Desbloquea el informe completo</span>
+        <span class="text-[11px] font-normal opacity-90">y sé parte de nuestra comunidad</span>
+      </button>
 
     </section>
 
