@@ -204,6 +204,18 @@
     #card-identidad {
       animation-delay: 1.4s;
     }
+
+    @keyframes plinq-btn-pulse {
+      0%   { transform: translateX(0px);    box-shadow: 0 2px 8px rgba(236,72,153,0.3); }
+      25%  { transform: translateX(3px);    box-shadow: 0 4px 16px rgba(236,72,153,0.5); }
+      50%  { transform: translateX(0px);    box-shadow: 0 2px 8px rgba(236,72,153,0.3); }
+      75%  { transform: translateX(-2px);   box-shadow: 0 4px 12px rgba(236,72,153,0.4); }
+      100% { transform: translateX(0px);    box-shadow: 0 2px 8px rgba(236,72,153,0.3); }
+    }
+
+    .plinq-btn-pulse {
+      animation: plinq-btn-pulse 2.2s ease-in-out infinite;
+    }
   </style>
 </head>
 
@@ -604,7 +616,7 @@
             <span>████████████████████████████████████████████</span>
           </div>
           <div class="text-center text-xl my-1">🔒</div>
-          <button onclick="openPaymentModal()" class="w-full text-sm font-bold text-white bg-gradient-to-r from-pink-500 to-rose-600 py-2 rounded-lg mt-1">
+          <button onclick="openPaymentModal()" class="w-full text-sm font-bold text-white bg-gradient-to-r from-pink-500 to-rose-600 py-2 rounded-lg mt-1 plinq-btn-pulse">
             🔒 Ver informe completo
           </button>
         </div>
@@ -627,7 +639,7 @@
             <span>████████████████████████████████████</span>
           </div>
           <div class="text-center text-xl my-1">🔒</div>
-          <button onclick="openPaymentModal()" class="w-full text-sm font-bold text-white bg-gradient-to-r from-pink-500 to-rose-600 py-2 rounded-lg mt-1">
+          <button onclick="openPaymentModal()" class="w-full text-sm font-bold text-white bg-gradient-to-r from-pink-500 to-rose-600 py-2 rounded-lg mt-1 plinq-btn-pulse">
             🔒 Acceder al informe
           </button>
         </div>
