@@ -2,7 +2,7 @@
 <html class="light" lang="es">
 <head>
   <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
   <title>Plinq | Verificación de Confianza</title>
 
   <!-- Google Fonts -->
@@ -219,6 +219,9 @@
 
     .scrollbar-hide::-webkit-scrollbar { display: none; }
     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Safe area support for notch / home-indicator devices */
+    .plinq-screen { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
   </style>
 </head>
 
@@ -540,17 +543,17 @@
     </button>
   </header>
 
-  <main class="pt-stack-lg pb-stack-lg px-container-margin max-w-2xl mx-auto space-y-stack-md mt-16 flex-grow flex flex-col flex-1">
+  <main class="pt-6 sm:pt-10 pb-8 px-container-margin max-w-2xl mx-auto space-y-stack-md mt-16 flex-grow flex flex-col flex-1" style="padding-bottom: max(32px, env(safe-area-inset-bottom, 32px))">
     <!-- Header foto perfil — circular pura -->
     <div class="flex flex-col items-center gap-3 mb-stack-md">
-      <div class="w-56 h-56 rounded-full overflow-hidden border-4 border-white shadow-lg">
+      <div class="w-40 h-40 sm:w-52 sm:h-52 rounded-full overflow-hidden border-4 border-white shadow-lg">
         <img id="result-profile-photo"
              src="/images/avatar-placeholder.png"
              alt="Foto"
              class="w-full h-full object-cover" />
       </div>
-      <div class="text-center">
-        <h3 class="font-headline-md text-on-surface" id="result-name">—</h3>
+      <div class="text-center max-w-xs px-2">
+        <h3 class="font-headline-md text-on-surface break-words" id="result-name">—</h3>
         <p class="text-xs text-orange-600 font-semibold">⚠️ Verificada recientemente</p>
       </div>
     </div>
@@ -601,7 +604,7 @@
       <div class="flex overflow-x-auto gap-4 pb-4 scrollbar-hide -mx-container-margin px-container-margin">
 
         <!-- Card 1: Encontramos más de lo que parece -->
-        <div class="flex-shrink-0 w-64 glass-card rounded-xl overflow-hidden cursor-pointer plinq-risk-locked" id="card-judicial" onclick="openPaymentModal()">
+        <div class="flex-shrink-0 w-56 sm:w-64 glass-card rounded-xl overflow-hidden cursor-pointer plinq-risk-locked" id="card-judicial" onclick="openPaymentModal()">
           <!-- Thumbnail area -->
           <div class="h-28 bg-gradient-to-br from-rose-900 to-pink-700 flex flex-col items-center justify-center relative">
             <span class="material-symbols-outlined text-white text-4xl mb-1" style="font-variation-settings:'FILL' 1;">manage_search</span>
@@ -623,7 +626,7 @@
         </div>
 
         <!-- Card 2: Información oculta -->
-        <div class="flex-shrink-0 w-64 glass-card rounded-xl overflow-hidden cursor-pointer plinq-risk-locked" id="card-identidad" onclick="openPaymentModal()">
+        <div class="flex-shrink-0 w-56 sm:w-64 glass-card rounded-xl overflow-hidden cursor-pointer plinq-risk-locked" id="card-identidad" onclick="openPaymentModal()">
           <!-- Thumbnail area -->
           <div class="h-28 bg-gradient-to-br from-purple-900 to-rose-800 flex flex-col items-center justify-center relative">
             <span class="material-symbols-outlined text-white text-4xl mb-1" style="font-variation-settings:'FILL' 1;">visibility_off</span>
