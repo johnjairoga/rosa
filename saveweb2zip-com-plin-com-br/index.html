@@ -701,29 +701,56 @@
   </main>
 
   <!-- Modal de pago — placeholder visual -->
-  <div id="payment-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background: rgba(0,0,0,0.7);">
-    <div class="w-full max-w-md rounded-2xl p-stack-md space-y-stack-md bg-white shadow-2xl">
-      <div class="flex items-center justify-between">
-        <h3 class="font-headline-md text-on-surface">Desbloquear Informe Completo</h3>
-        <button onclick="closePaymentModal()" class="p-2 rounded-full hover:bg-surface-container-highest">
-          <span class="material-symbols-outlined">close</span>
+  <div id="payment-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background: rgba(0,0,0,0.75);">
+    <div class="w-full max-w-md rounded-2xl bg-white shadow-2xl overflow-hidden">
+      <!-- Header con urgencia -->
+      <div class="bg-gradient-to-r from-red-600 to-red-500 px-5 py-4 flex items-start justify-between">
+        <div>
+          <p class="text-white/80 text-xs font-semibold uppercase tracking-wide">Informe listo para entregar</p>
+          <h3 class="text-white font-bold text-lg leading-tight mt-0.5">Ya tenemos todo sobre esta persona</h3>
+        </div>
+        <button onclick="closePaymentModal()" class="text-white/70 hover:text-white mt-0.5 flex-shrink-0">
+          <span class="material-symbols-outlined text-xl">close</span>
         </button>
       </div>
-      <div class="bg-error-container/20 rounded-xl p-4 text-center border border-error/30">
-        <p class="text-3xl font-bold text-error">$4.99</p>
-        <p class="text-xs text-on-surface-variant mt-1">Acceso inmediato al informe completo</p>
+
+      <div class="p-5 space-y-4">
+        <!-- Precio -->
+        <div class="bg-red-50 rounded-xl p-4 text-center border border-red-100">
+          <p class="text-4xl font-bold text-red-600">$4.99</p>
+          <p class="text-xs text-gray-500 mt-1">Pago único · Sin suscripción · Acceso inmediato</p>
+        </div>
+
+        <!-- Lo que incluye -->
+        <ul class="space-y-2.5">
+          <li class="flex items-center gap-2.5 text-sm text-gray-700">
+            <span class="material-symbols-outlined text-red-500 text-base flex-shrink-0" style="font-variation-settings:'FILL' 1;">check_circle</span>
+            Historial completo de actividad y antecedentes
+          </li>
+          <li class="flex items-center gap-2.5 text-sm text-gray-700">
+            <span class="material-symbols-outlined text-red-500 text-base flex-shrink-0" style="font-variation-settings:'FILL' 1;">check_circle</span>
+            Registros que no aparecen en búsquedas normales
+          </li>
+          <li class="flex items-center gap-2.5 text-sm text-gray-700">
+            <span class="material-symbols-outlined text-red-500 text-base flex-shrink-0" style="font-variation-settings:'FILL' 1;">check_circle</span>
+            Perfil de identidad verificado y completo
+          </li>
+          <li class="flex items-center gap-2.5 text-sm text-gray-700">
+            <span class="material-symbols-outlined text-red-500 text-base flex-shrink-0" style="font-variation-settings:'FILL' 1;">check_circle</span>
+            La persona verificada no recibe ningún aviso
+          </li>
+        </ul>
+
+        <p id="payment-errors" class="text-xs text-red-600 hidden"></p>
+
+        <!-- Botón -->
+        <button id="pay-button" onclick="handlePayment()" class="w-full bg-gradient-to-r from-red-600 to-red-500 text-white py-4 rounded-xl font-bold text-base shadow-lg flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">lock_open</span>
+          <span id="pay-button-text">Sí, quiero ver el informe — $4.99</span>
+        </button>
+
+        <p class="text-center text-xs text-gray-400">🔒 Pago seguro · Entrega instantánea · 100% anónimo</p>
       </div>
-      <ul class="space-y-2 text-sm text-on-surface-variant">
-        <li class="flex items-center gap-2"><span class="material-symbols-outlined text-error text-sm" style="font-variation-settings:'FILL' 1;">check_circle</span> Antecedentes criminales completos</li>
-        <li class="flex items-center gap-2"><span class="material-symbols-outlined text-error text-sm" style="font-variation-settings:'FILL' 1;">check_circle</span> Huella digital y redes sociales</li>
-        <li class="flex items-center gap-2"><span class="material-symbols-outlined text-error text-sm" style="font-variation-settings:'FILL' 1;">check_circle</span> Identidad verificada completa</li>
-      </ul>
-      <p id="payment-errors" class="text-xs text-red-600 hidden"></p>
-      <button id="pay-button" onclick="handlePayment()" class="w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-4 rounded-xl font-headline-md shadow-lg flex items-center justify-center gap-2">
-        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">lock_open</span>
-        <span id="pay-button-text">Ver Informe Completo — $4.99</span>
-      </button>
-      <p class="text-center text-xs text-on-surface-variant">🔒 Pago 100% seguro</p>
     </div>
   </div>
 
